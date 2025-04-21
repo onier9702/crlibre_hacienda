@@ -235,6 +235,9 @@ function files_upload($type = 'attach', $finalName = false, $ext = false, $maxSi
     }
 
     # Try to upload the file
+    grace_debug("TESTTTT");
+    grace_debug($_FILES["fileToUpload"]["tmp_name"]);
+    grace_debug($targetFile);
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $targetFile))
     {
         $downloadCode = files_createDownloadCode($finalName, $user->idUser);
@@ -250,9 +253,9 @@ function files_upload($type = 'attach', $finalName = false, $ext = false, $maxSi
         ));
 
         return array('idFile' => $idFile, 'name' => $finalName, 'downloadCode' => $downloadCode);
-    }
-    else
+    } else {
         return ERROR_FILES_UPLOAD_ERROR;
+    }
 }
 
 /**
