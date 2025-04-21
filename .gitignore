@@ -12,6 +12,7 @@ build/*
 validation_data.json
 
 # environment files
+.env
 docker-php-apache/php-apache.env
 docker-php-apache/php-apache.env.production
 
