@@ -65,4 +65,6 @@ fi
 
 setUpCryptoKey &
 
+chmod -R 777 /var/www/html/api/files
+
 exec "$@"

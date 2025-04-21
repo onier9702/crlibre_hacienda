@@ -235,13 +235,7 @@ function files_upload($type = 'attach', $finalName = false, $ext = false, $maxSi
     }
 
     # Try to upload the file
-    grace_debug("TESTTTT");
-    grace_debug($_FILES["fileToUpload"]["tmp_name"]);
-    grace_debug($targetFile);
-    if (empty($_FILES)) {
-        grace_debug("No files uploaded - maybe post_max_size too small?");
-    }
-    
+
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $targetFile))
     {
         grace_debug($_FILES["fileToUpload"]["size"]);
@@ -258,12 +252,9 @@ function files_upload($type = 'attach', $finalName = false, $ext = false, $maxSi
         ));
 
         return array('idFile' => $idFile, 'name' => $finalName, 'downloadCode' => $downloadCode);
-    } else {
-        $error = error_get_last();
-        grace_debug("Upload failed: " . json_encode($error));
-        grace_debug("tmp_name exists? " . (file_exists($_FILES["fileToUpload"]["tmp_name"]) ? 'yes' : 'no'));
-        return ERROR_FILES_UPLOAD_ERROR;
     }
+    else
+        return ERROR_FILES_UPLOAD_ERROR;
 }
 
 /**
