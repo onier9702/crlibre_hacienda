@@ -19,7 +19,7 @@
 /* * ************************************************** */
 /* Constantes de validacion                             */
 /* * ************************************************** */
-const TIPODOCREFVALUES = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '99');
+const TIPODOCREFVALUES = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '14', '99');
 const CODIDOREFVALUES = array('01','02','04','05','99');
 const CODIGOACTIVIDADSIZE = 6;
 const EMISORNOMBREMAXSIZE = 100;
