@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2017-2025 CRLibre <https://crlibre.org>
+ * Copyright (C) 2017-2020 CRLibre <https://crlibre.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,72 +19,58 @@
 # Declare it as global, but never use it as global
 global $config;
 
-# Cargar config del .env 
-$envFilePath = __DIR__ . "/../.env";
-if (file_exists($envFilePath)) {
-  $env = file_get_contents($envFilePath);
-  $lines = explode("\n", $env);
-
-  foreach ($lines as $line) {
-    preg_match("/^\s*([^#][^=]*)=(.*)$/", $line, $matches);
-    if (isset($matches[2])) {
-      putenv(trim($line));
-    }
-  }
-}
-
 #####################################################################################
 #
 # Database
 #
 #####################################################################################
 # Database name
-$config['db']['name'] = getenv('DB_NAME');
+$config['db']['name'] = "testdb";
 # Database password
-$config['db']['pwd'] = getenv('DB_PASSWORD');
+$config['db']['pwd'] = 'testpassword';
 # Database user name
-$config['db']['user'] = getenv('DB_USERNAME');
+$config['db']['user'] = "testuser";
 # Database host
-$config['db']['host'] = getenv('DB_HOST');
+$config['db']['host'] = "mariadb";
 ##############################################################################
 #
 # Crypto Keys
 #
 ##############################################################################
-$config['crypto']['key'] = getenv('cryptoKey');
+$config['crypto']['key'] = "{cryptoKey}";
 ##############################################################################
 #
 # print alerts
 # false or true
 #
 ##############################################################################
-$config['boot']['alert'] = getenv('boot_alert');
+$config['boot']['alert'] = "false";
 ##############################################################################
 ##
 ## Log errors
 ## false or true
 ##
 ###############################################################################
-$config['debug']['print_all']    = getenv('log_errors');
-$config['debug']['print_absurd'] = getenv('log_errors');
-$config['debug']['print_debug']  = getenv('log_errors');
-$config['debug']['print_error']  = getenv('log_errors');
+$config['debug']['print_all']    = true;
+$config['debug']['print_absurd'] = true;
+$config['debug']['print_debug']  = true;
+$config['debug']['print_error']  = true;
 ##############################################################################
 #
 # Emails
 #
 ##############################################################################
 # Options: "mail" or "smtp".
-$config['mail']['type']         = getenv('mail_or_smtp');
+$config['mail']['type']         = "mail";
 # Used in "mail" or "smtp"
-$config['mail']['address']      = getenv('mail_address');       // for example: info@crlibre.org
-$config['mail']['noreply']      = getenv('mail_noreply');       // Optional - for example: no-reply@crlibre.org
+$config['mail']['address']      = "";       // for example: info@crlibre.org
+$config['mail']['noreply']      = "";       // Optional - for example: no-reply@crlibre.org
 # If "smtp" option is actived.
-$config['mail']['host']         = getenv('smtp_only_host');
-$config['mail']['username']     = getenv('smtp_only_username');
-$config['mail']['password']     = getenv('smtp_only_password');
-$config['mail']['secure']       = getenv('tls_or_ssl');         // Use tls or ssl
-$config['mail']['port']         = getenv('mail_port_587');
+$config['mail']['host']         = "";
+$config['mail']['username']     = "";
+$config['mail']['password']     = "";
+$config['mail']['secure']       = "tls";    // Use tls or ssl
+$config['mail']['port']         = 587;
 
 ##############################################################################
 #
@@ -98,29 +84,29 @@ $config['mail']['port']         = getenv('mail_port_587');
 
 # The core installation: This is probably the only one you need to touch
 # IMPORTANTE: La ruta debe finalizar en "/".
-$config['modules']['coreInstall'] = getenv('core_install');
+$config['modules']['coreInstall'] = "/var/www/html/api/";
 
 # Name of your site, Not in use really
-$config['core']['siteName'] = getenv('core_siteName');
+$config['core']['siteName'] = 'MySite';
 
 # The host name for your site
-$config['core']['host'] = getenv('core_host');
-$config['core']['compannyIMG'] = getenv('corp_url_img');
+$config['core']['host'] = "mySite.com";
+$config['core']['compannyIMG'] = "https://scontent.fsyq2-1.fna.fbcdn.net/v/t1.0-9/33379063_741113822944661_9042709073681711104_n.png?_nc_cat=0&oh=9ac1b60c1f7ab20eb174b29d85a50470&oe=5C0C2666";
 
 # Time in seconds for the lifetime of a session, after this time, the user must
 # log back in, if you dont want to use the session life set the value in -1, li this
 #  $config['users']['sessionLifetime'] = -1;
 
-$config['users']['sessionLifetime'] = getenv('sessionLifetime');
+$config['users']['sessionLifetime'] = -1;
 
 /*******************************************************************************
  * You should not need to touch anything beyond this point
  */
-
+ 
 
 
 # List of core modules
-$config['modules']['core']     = array('cala', 'db', 'users', 'files', 'geoloc', 'wirez', 'crypto');
+$config['modules']['core']     = array('cala','db', 'users', 'files', 'geoloc', 'wirez', 'crypto');
 # List of core modules to load always, you can overide this list
 $config['modules']['coreLoad'] = array('cala', 'db', 'users', 'crypto');
 
