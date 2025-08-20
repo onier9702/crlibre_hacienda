@@ -2968,59 +2968,59 @@ function genXMLTE()
         error_log(sprintf("Invalid email format: '%s' does not meet the regex pattern: %s", $emisorEmail, EMAIL_REGEX));
     }
 
-    if ($omitir_receptor != 'true') {
-        $xmlString .= '<Receptor>
-            <Nombre>' . $receptorNombre . '</Nombre>';
+    // if ($omitir_receptor != 'true') {
+    //     $xmlString .= '<Receptor>
+    //         <Nombre>' . $receptorNombre . '</Nombre>';
 
-        if ($receptorTipoIdentif != '' && $receptorNumIdentif != '') {
-            $xmlString .= '
-            <Identificacion>
-                <Tipo>' . $receptorTipoIdentif . '</Tipo>
-                <Numero>' . $receptorNumIdentif . '</Numero>
-            </Identificacion>';
-        }
+    //     if ($receptorTipoIdentif != '' && $receptorNumIdentif != '') {
+    //         $xmlString .= '
+    //         <Identificacion>
+    //             <Tipo>' . $receptorTipoIdentif . '</Tipo>
+    //             <Numero>' . $receptorNumIdentif . '</Numero>
+    //         </Identificacion>';
+    //     }
 
-        if (isset($receptorNombreComercial) && $receptorNombreComercial != "") {
-            $xmlString .= '
-        <NombreComercial>' . $receptorNombreComercial . '</NombreComercial>';
-        }
+    //     if (isset($receptorNombreComercial) && $receptorNombreComercial != "") {
+    //         $xmlString .= '
+    //     <NombreComercial>' . $receptorNombreComercial . '</NombreComercial>';
+    //     }
 
-        if ($receptorProvincia != '' && $receptorCanton != '' && $receptorDistrito != '' && $receptorOtrasSenas != '') {
-            $xmlString .= '
-                <Ubicacion>
-                    <Provincia>' . $receptorProvincia . '</Provincia>
-                    <Canton>' . $receptorCanton . '</Canton>
-                    <Distrito>' . $receptorDistrito . '</Distrito>';
-            if ($receptorBarrio != '') {
-                $xmlString .= '
-                    <Barrio>' . $receptorBarrio . '</Barrio>';
-            }
-            $xmlString .= '
-                    <OtrasSenas>' . $receptorOtrasSenas . '</OtrasSenas>
-                </Ubicacion>';
-        }
+    //     if ($receptorProvincia != '' && $receptorCanton != '' && $receptorDistrito != '' && $receptorOtrasSenas != '') {
+    //         $xmlString .= '
+    //             <Ubicacion>
+    //                 <Provincia>' . $receptorProvincia . '</Provincia>
+    //                 <Canton>' . $receptorCanton . '</Canton>
+    //                 <Distrito>' . $receptorDistrito . '</Distrito>';
+    //         if ($receptorBarrio != '') {
+    //             $xmlString .= '
+    //                 <Barrio>' . $receptorBarrio . '</Barrio>';
+    //         }
+    //         $xmlString .= '
+    //                 <OtrasSenas>' . $receptorOtrasSenas . '</OtrasSenas>
+    //             </Ubicacion>';
+    //     }
 
-        if ($receptorOtrasSenasExtranjero != '' && strlen($receptorOtrasSenasExtranjero) <= RECEPTOROTRASSENASEXTRANJEROMAXSIZE) {
-            $xmlString .= '
-            <OtrasSenasExtranjero>'
-                . $receptorOtrasSenasExtranjero .
-                '</OtrasSenasExtranjero>';
-        }
+    //     if ($receptorOtrasSenasExtranjero != '' && strlen($receptorOtrasSenasExtranjero) <= RECEPTOROTRASSENASEXTRANJEROMAXSIZE) {
+    //         $xmlString .= '
+    //         <OtrasSenasExtranjero>'
+    //             . $receptorOtrasSenasExtranjero .
+    //             '</OtrasSenasExtranjero>';
+    //     }
 
-        if ($receptorCodPaisTel != '' && $receptorTel != '') {
-            $xmlString .= '
-            <Telefono>
-                <CodigoPais>' . $receptorCodPaisTel . '</CodigoPais>
-                <NumTelefono>' . $receptorTel . '</NumTelefono>
-            </Telefono>';
-        }
+    //     if ($receptorCodPaisTel != '' && $receptorTel != '') {
+    //         $xmlString .= '
+    //         <Telefono>
+    //             <CodigoPais>' . $receptorCodPaisTel . '</CodigoPais>
+    //             <NumTelefono>' . $receptorTel . '</NumTelefono>
+    //         </Telefono>';
+    //     }
 
-        if ($receptorEmail != '') {
-            $xmlString .= '<CorreoElectronico>' . $receptorEmail . '</CorreoElectronico>';
-        }
+    //     if ($receptorEmail != '') {
+    //         $xmlString .= '<CorreoElectronico>' . $receptorEmail . '</CorreoElectronico>';
+    //     }
 
-        $xmlString .= '</Receptor>';
-    }
+    //     $xmlString .= '</Receptor>';
+    // }
 
     $xmlString .= '
     <CondicionVenta>' . $condVenta . '</CondicionVenta>';
