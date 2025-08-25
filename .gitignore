@@ -19,6 +19,9 @@ NewFields4.4.md
 /mysql-data/*
 !/mysql-data/.gitkeep
 
+# Github files
+.github/workflows
+
 # ignore IDE/hidden/OS cache files
 *~
 nbproject
