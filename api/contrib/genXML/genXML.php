@@ -1220,7 +1220,8 @@ function genXMLNC()
         error_log(sprintf("Invalid email format: '%s' does not meet the regex pattern: %s", $emisorEmail, EMAIL_REGEX));
     }
 
-    if ($omitir_receptor != 'true') {
+    // only includes receptor in case this comes in data json
+    if ($receptorNumIdentif && $omitir_receptor != 'true') {
         $xmlString .= '<Receptor>
             <Nombre>' . $receptorNombre . '</Nombre>';
 
@@ -1778,6 +1779,7 @@ function genXMLNC()
         <TotalComprobante>' . $totalComprobante . '</TotalComprobante>
     </ResumenFactura>';
 
+    // here
     if (is_array($informacionReferencia) && count($informacionReferencia) > 0) {
         foreach ($informacionReferencia as $ref) {
             if (!empty($ref->tipoDoc) && !empty($ref->fechaEmision)) {
