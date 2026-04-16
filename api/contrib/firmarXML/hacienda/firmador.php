@@ -47,23 +47,40 @@ class Firmador {
     const TO_XML_FILE = 5;
 
     public function firmarXml($pfx,$pin,$input,$output,$path=null){
-        // return dirname(__FILE__,2) .'/xmlseclibs/xmlseclibs.php';
-        // Cargar un nuevo XML para ser firmado
+
+        // =========================
+        // LOAD CERTIFICATE (FIXED)
+        // =========================
+        $pfxContent = file_get_contents($pfx);
+
+        $certs = [];
+        if (!openssl_pkcs12_read($pfxContent, $certs, $pin)) {
+            return [
+                "error" => "openssl_pkcs12_read failed",
+                "openssl_error" => openssl_error_string()
+            ];
+        }
+
+        if (!isset($certs['pkey']) || !isset($certs['cert'])) {
+            return [
+                "error" => "Certificate missing pkey or cert"
+            ];
+        }
+
+        // =========================
+        // LOAD XML
+        // =========================
         $xml = new \DOMDocument();
 
-        // Detectar si es un archivo (ruta en disco) o bien un string xml
-        // if (file_exists($input)){
-        //     $input = file_get_contents($input);
-        // }
-
-        // Intentar parsear el input como archivo xml. Caso contrario se detiene el script
         try {
             $xml->loadXML($input);
         } catch (\Exception $ex){
-            die($ex->getMessage());
+            return ["error" => $ex->getMessage()];
         }
 
-        // Crear un nuevo objeto de seguridad
+        // =========================
+        // SIGN PROCESS
+        // =========================
         $objSec = new XMLSecurityDSig();
 
         // Mantener el primer nodo secundario original XML en memoria
@@ -72,39 +89,63 @@ class Firmador {
         // Establecer política de firma
         $objSec->setSignPolicy();
 
-        // Cargar la información del certificado desde el archivo *.p12
-        $certInfo = $objSec->loadCertInfo($pfx,$pin);
-
         // Usar la canonicalización exclusiva de c14n.
         $objSec->setCanonicalMethod($objSec::C14N);
 
         // Cargar la clave privada del certificado
-        $objKey = new XMLSecurityKey(XMLSecurityKey::RSA_SHA256, array('type' => 'private'));
-        $objKey->loadKey($certInfo["privateKey"]);
+        $objKey = new XMLSecurityKey(XMLSecurityKey::RSA_SHA256, ['type' => 'private']);
+        $objKey->loadKey($certs['pkey'], false);
 
-        // Agregar la clave pública asociada a la firma.
-        $objSec->add509Cert($certInfo["publicKey"], true);
+        // Add cert
+        $objSec->add509Cert($certs['cert'], true);
+
+        // Build minimal certInfo structure for compatibility
+        $certInfo = [
+            "privateKey" => $certs['pkey'],
+            "publicKey" => $certs['cert']
+        ];
+
         $objSec->appendKeyValue($certInfo);
 
         // Insertar objeto Xades en la firma.
         $objSec->appendXades($certInfo);
 
-        // Firmar utilizando SHA-256
-        // Referencia del documento
-        $objSec->addReference($xml,$objSec::SHA256, [ 'http://www.w3.org/2000/09/xmldsig#enveloped-signature' ], [ 'id_ref' => $objSec->reference0Id, 'force_uri' => true ]);
+        // References
+        $objSec->addReference(
+            $xml,
+            $objSec::SHA256,
+            ['http://www.w3.org/2000/09/xmldsig#enveloped-signature'],
+            ['id_ref' => $objSec->reference0Id, 'force_uri' => true]
+        );
 
-        // Referencia de nodo de información clave
-        $objSec->addReference($objSec->getKeyInfoNode(),$objSec::SHA256,null, [ 'id_ref' => $objSec->reference1Id, 'force_uri' => false, 'overwrite' => false ]);
+        $objSec->addReference(
+            $objSec->getKeyInfoNode(),
+            $objSec::SHA256,
+            null,
+            ['id_ref' => $objSec->reference1Id, 'force_uri' => false, 'overwrite' => false]
+        );
 
-        // Referencia del nodo Xades
-        $objSec->addReference($objSec->getXadesNode(),$objSec::SHA256,null, [ 'force_uri' => false, 'overwrite' => false, "type" => "http://uri.etsi.org/01903#SignedProperties" ], [ [ 'qualifiedName' => 'xmlns:xades', 'value' => $objSec::XADES ] ]);
+        $objSec->addReference(
+            $objSec->getXadesNode(),
+            $objSec::SHA256,
+            null,
+            [
+                'force_uri' => false,
+                'overwrite' => false,
+                "type" => "http://uri.etsi.org/01903#SignedProperties"
+            ],
+            [
+                ['qualifiedName' => 'xmlns:xades', 'value' => $objSec::XADES]
+            ]
+        );
 
         // Firma el archivo xml
         $objSec->sign($objKey);
-
-        // Adjuntar la firma al xml
         $objSec->appendSignature($xml->documentElement);
 
+        // =========================
+        // OUTPUT
+        // =========================
         if ($output == self::TO_BASE64_STRING){
             // Devuelve el string del archivo xml firmado en formato Base64
             return base64_encode($xml->saveXML());
