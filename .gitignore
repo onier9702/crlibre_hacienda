@@ -53,4 +53,5 @@ junit-report.xml
 
 # env files
 .env
+.env.prod
 php-apache.env.production
