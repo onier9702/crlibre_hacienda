@@ -153,121 +153,24 @@ function files_createDownloadCode($name, $idUser)
  * */
 function files_upload($type = 'attach', $finalName = false, $ext = false, $maxSize = 0, $del = true)
 {
-    grace_debug("========== UPLOAD DEBUG START ==========");
-
-    if (strpos($_SERVER['CONTENT_TYPE'] ?? '', 'multipart/form-data') === false) {
-        file_put_contents('/tmp/raw_after.txt', file_get_contents("php://input"));
-    }
-
-    grace_debug("post_max_size: " . ini_get('post_max_size'));
-    grace_debug("upload_max_filesize: " . ini_get('upload_max_filesize'));
-    grace_debug("memory_limit: " . ini_get('memory_limit'));
-
-    grace_debug("CONTENT_LENGTH: " . ($_SERVER['CONTENT_LENGTH'] ?? 'N/A'));
-    grace_debug("REQUEST_METHOD: " . ($_SERVER['REQUEST_METHOD'] ?? 'N/A'));
-
-    if (function_exists('getallheaders')) {
-        grace_debug("HEADERS:");
-        grace_debug(print_r(getallheaders(), true));
-    }
-
-    $raw = file_get_contents("php://input");
-    grace_debug("RAW INPUT SIZE: " . strlen($raw));
-
-    grace_debug("RAW _FILES:");
-    grace_debug(print_r($_FILES, true));
-
-    grace_debug("RAW _POST:");
-    grace_debug(print_r($_POST, true));
-
-    if (empty($_FILES)) {
-        grace_debug("ERROR: _FILES is empty → REQUEST BODY NOT PARSED");
-        grace_debug("========== UPLOAD DEBUG END ==========");
+    if (empty($_FILES))
         return ERROR_FILES_UPLOAD_ERROR;
-    }
 
     global $user;
 
-    grace_debug("========== UPLOAD DEBUG START ==========");
-
-    // 🔥 0. SERVER / PHP LIMITS (CRITICAL)
-    grace_debug("post_max_size: " . ini_get('post_max_size'));
-    grace_debug("upload_max_filesize: " . ini_get('upload_max_filesize'));
-    grace_debug("memory_limit: " . ini_get('memory_limit'));
-
-    // 🔥 1. REQUEST INFO
-    grace_debug("CONTENT_LENGTH: " . ($_SERVER['CONTENT_LENGTH'] ?? 'NOT SET'));
-    grace_debug("REQUEST_METHOD: " . $_SERVER['REQUEST_METHOD']);
-
-    // 🔥 2. HEADERS (THIS WILL EXPOSE POSTMAN ISSUES)
-    if (function_exists('getallheaders')) {
-        grace_debug("HEADERS:");
-        grace_debug(print_r(getallheaders(), true));
-    }
-
-    // 🔥 3. RAW INPUT SIZE
-    $rawInput = file_get_contents("php://input");
-    grace_debug("RAW INPUT SIZE: " . strlen($rawInput));
-
-    // 🔥 4. FILES + POST
-    grace_debug("RAW _FILES:");
-    grace_debug(print_r($_FILES, true));
-
-    grace_debug("RAW _POST:");
-    grace_debug(print_r($_POST, true));
-
-    // 🚨 If empty → we already know it's infra problem
-    if (empty($_FILES)) {
-        grace_debug("ERROR: _FILES is empty → REQUEST BODY NOT PARSED");
-
-        grace_debug("========== UPLOAD DEBUG END ==========");
-        return ERROR_FILES_UPLOAD_ERROR;
-    }
-
-    $key = array_key_first($_FILES);
-    grace_debug("Detected file key: " . $key);
-
+    $key  = array_key_first($_FILES);
     $file = $_FILES[$key];
 
-    grace_debug("FILE STRUCT:");
-    grace_debug(print_r($file, true));
-
-    // 🔥 5. PHP upload error
-    if ($file['error'] !== UPLOAD_ERR_OK) {
-        grace_debug("UPLOAD ERROR CODE: " . $file['error']);
-
-        $errors = [
-            UPLOAD_ERR_INI_SIZE   => "Exceeded upload_max_filesize",
-            UPLOAD_ERR_FORM_SIZE  => "Exceeded MAX_FILE_SIZE",
-            UPLOAD_ERR_PARTIAL    => "Partial upload",
-            UPLOAD_ERR_NO_FILE    => "No file sent",
-            UPLOAD_ERR_NO_TMP_DIR => "Missing tmp dir",
-            UPLOAD_ERR_CANT_WRITE => "Disk write failed",
-            UPLOAD_ERR_EXTENSION  => "Stopped by PHP extension",
-        ];
-
-        grace_debug("UPLOAD ERROR MSG: " . ($errors[$file['error']] ?? "Unknown"));
-
-        grace_debug("========== UPLOAD DEBUG END ==========");
+    if ($file['error'] !== UPLOAD_ERR_OK)
         return ERROR_FILES_UPLOAD_ERROR;
-    }
 
-    // 🔥 6. TMP FILE CHECK
-    if (!file_exists($file['tmp_name'])) {
-        grace_debug("ERROR: tmp file does not exist: " . $file['tmp_name']);
-        grace_debug("========== UPLOAD DEBUG END ==========");
+    if (!file_exists($file['tmp_name']))
         return ERROR_FILES_UPLOAD_ERROR;
-    }
 
-    grace_debug("TMP FILE EXISTS: " . $file['tmp_name']);
-
-    // 🔥 7. NAME + EXT
     $originalName = $file['name'];
 
-    if (empty($originalName)) {
-        grace_debug("ERROR: filename is empty");
+    if (empty($originalName))
         return ERROR_FILES_UPLOAD_ERROR;
-    }
 
     if ($finalName === false) {
         $finalName = basename($originalName);
@@ -275,80 +178,52 @@ function files_upload($type = 'attach', $finalName = false, $ext = false, $maxSi
         $finalName = $finalName . "." . pathinfo($originalName, PATHINFO_EXTENSION);
     }
 
-    grace_debug("FINAL NAME: " . $finalName);
-
     $extension = pathinfo($finalName, PATHINFO_EXTENSION);
-    grace_debug("EXTENSION DETECTED: " . $extension);
 
-    if ($ext == false) {
+    if ($ext == false)
         $ext = conf_get("allowedExt", "files", "jpg,png,p12,xml");
-    }
 
     if ($ext != "*") {
         $allowed = explode(",", $ext);
-        grace_debug("ALLOWED EXT: " . implode(",", $allowed));
-
-        if (!in_array($extension, $allowed)) {
-            grace_debug("ERROR: extension not allowed");
+        if (!in_array($extension, $allowed))
             return ERROR_FILES_EXT_NOT_ALLOWED;
-        }
     }
 
-    // 🔥 8. SIZE VALIDATION
-    if ($maxSize == false) {
+    if ($maxSize == false)
         $maxSize = conf_get("maxUploadSize", "files", "2");
-    }
 
-    if ($file['size'] > $maxSize * 1000000) {
-        grace_debug("ERROR: file too big");
+    if ($file['size'] > $maxSize * 1000000)
         return ERROR_FILES_TOO_BIG;
-    }
 
-    grace_debug("FILE SIZE OK: " . $file['size']);
-
-    // 🔥 9. PATH
     $targetDir = files_createPath($user->idUser, $type);
-    grace_debug("TARGET DIR: " . $targetDir);
 
-    if (!file_exists($targetDir)) {
+    if (!file_exists($targetDir))
         mkdir($targetDir, 0777, true);
-        grace_debug("Created directory");
-    }
 
     $targetFile = $targetDir . $finalName;
-    grace_debug("TARGET FILE: " . $targetFile);
 
-    // 🔥 10. MOVE
     if (move_uploaded_file($file['tmp_name'], $targetFile)) {
-        grace_debug("SUCCESS: file moved");
-
         $downloadCode = files_createDownloadCode($finalName, $user->idUser);
 
         $idFile = files_save([
-            'md5'         => md5_file($targetFile),
-            'name'        => $finalName,
-            'timestamp'   => time(),
-            'size'        => $file['size'],
-            'idUser'      => $user->idUser,
-            'downloadCode'=> $downloadCode,
-            'fileType'    => "",
-            'type'        => $type
+            'md5'          => md5_file($targetFile),
+            'name'         => $finalName,
+            'timestamp'    => time(),
+            'size'         => $file['size'],
+            'idUser'       => $user->idUser,
+            'downloadCode' => $downloadCode,
+            'fileType'     => "",
+            'type'         => $type
         ]);
 
-        grace_debug("========== UPLOAD DEBUG END ==========");
-
         return [
-            'idFile' => $idFile,
-            'name' => $finalName,
+            'idFile'       => $idFile,
+            'name'         => $finalName,
             'downloadCode' => $downloadCode
         ];
-    } else {
-        grace_debug("ERROR: move_uploaded_file FAILED");
-        grace_debug("Check permissions or open_basedir");
-
-        grace_debug("========== UPLOAD DEBUG END ==========");
-        return ERROR_FILES_UPLOAD_ERROR;
     }
+
+    return ERROR_FILES_UPLOAD_ERROR;
 }
 
 /**

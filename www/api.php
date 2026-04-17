@@ -48,16 +48,14 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With');
 header('Access-Control-Allow-Methods: GET, PUT, POST');
 
-
-//print_r($argv);
-
 if (isset($_GET['w']))
     params_set('w', $_GET);
 else if (isset($_POST['w']))
     params_set('w', $_POST);
 else if (isset($_PUT))
     params_set('w', $_PUT);
-else if (file_get_contents("php://input") !== null)
+else if (strpos($_SERVER['CONTENT_TYPE'] ?? '', 'multipart/form-data') === false
+         && file_get_contents("php://input") !== null)
 {
     $content = file_get_contents("php://input");
     if (is_string($content) && is_array(json_decode($content, true)) && (json_last_error() == JSON_ERROR_NONE))
