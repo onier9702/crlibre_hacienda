@@ -223,7 +223,10 @@ function files_upload($type = 'attach', $finalName = false, $ext = false, $maxSi
         # Get the information about the file
         $fInfo = pathinfo($targetFile);
 
-        if (!in_array($fInfo['extension'], $ext))
+        grace_debug("EXTENSION DETECTED: " . $fInfo['extension']);
+        grace_debug("ALLOWED: " . implode(",", $ext));
+
+        if (!in_array(strtolower($fInfo['extension']), array_map('strtolower', $ext)))
             return ERROR_FILES_EXT_NOT_ALLOWED;
     }
 
