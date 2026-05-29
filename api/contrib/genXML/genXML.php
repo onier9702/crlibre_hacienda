@@ -690,7 +690,7 @@ function genXMLFe()
                     if (isset($i->exoneracion->numeroArticulo) && !empty($i->exoneracion->numeroArticulo)) {
                         $xmlString .= '<Articulo>' . $i->exoneracion->numeroArticulo . '</Articulo>';
                     }
-                    if (isset($i->exoneracion->numeroInciso) && !empty($i->exoneracion->numeroInciso)) {
+                    if (isset($i->exoneracion->numeroInciso)) {
                         $xmlString .= '<Inciso>' . $i->exoneracion->numeroInciso . '</Inciso>';
                     }
                     $xmlString .= '<NombreInstitucion>' . $i->exoneracion->nombreInstitucion . '</NombreInstitucion>';
@@ -1563,7 +1563,7 @@ function genXMLNC()
                     if (isset($i->exoneracion->numeroArticulo) && !empty($i->exoneracion->numeroArticulo)) {
                         $xmlString .= '<Articulo>' . $i->exoneracion->numeroArticulo . '</Articulo>';
                     }
-                    if (isset($i->exoneracion->numeroInciso) && !empty($i->exoneracion->numeroInciso)) {
+                    if (isset($i->exoneracion->numeroInciso)) {
                         $xmlString .= '<Inciso>' . $i->exoneracion->numeroInciso . '</Inciso>';
                     }
                     $xmlString .= '<NombreInstitucion>' . $i->exoneracion->nombreInstitucion . '</NombreInstitucion>';
@@ -2442,7 +2442,7 @@ function genXMLND()
                     if (isset($i->exoneracion->numeroArticulo) && !empty($i->exoneracion->numeroArticulo)) {
                         $xmlString .= '<Articulo>' . $i->exoneracion->numeroArticulo . '</Articulo>';
                     }
-                    if (isset($i->exoneracion->numeroInciso) && !empty($i->exoneracion->numeroInciso)) {
+                    if (isset($i->exoneracion->numeroInciso)) {
                         $xmlString .= '<Inciso>' . $i->exoneracion->numeroInciso . '</Inciso>';
                     }
                     $xmlString .= '<NombreInstitucion>' . $i->exoneracion->nombreInstitucion . '</NombreInstitucion>';
@@ -3306,7 +3306,7 @@ function genXMLTE()
                     if (isset($i->exoneracion->numeroArticulo) && !empty($i->exoneracion->numeroArticulo)) {
                         $xmlString .= '<Articulo>' . $i->exoneracion->numeroArticulo . '</Articulo>';
                     }
-                    if (isset($i->exoneracion->numeroInciso) && !empty($i->exoneracion->numeroInciso)) {
+                    if (isset($i->exoneracion->numeroInciso)) {
                         $xmlString .= '<Inciso>' . $i->exoneracion->numeroInciso . '</Inciso>';
                     }
                     $xmlString .= '<NombreInstitucion>' . $i->exoneracion->nombreInstitucion . '</NombreInstitucion>';
@@ -4111,7 +4111,7 @@ function genXMLFec()
                     if (isset($i->exoneracion->numeroArticulo) && !empty($i->exoneracion->numeroArticulo)) {
                         $xmlString .= '<Articulo>' . $i->exoneracion->numeroArticulo . '</Articulo>';
                     }
-                    if (isset($i->exoneracion->numeroInciso) && !empty($i->exoneracion->numeroInciso)) {
+                    if (isset($i->exoneracion->numeroInciso)) {
                         $xmlString .= '<Inciso>' . $i->exoneracion->numeroInciso . '</Inciso>';
                     }
                     $xmlString .= '<NombreInstitucion>' . $i->exoneracion->nombreInstitucion . '</NombreInstitucion>';
