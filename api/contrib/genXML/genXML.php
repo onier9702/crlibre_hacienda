@@ -61,7 +61,6 @@ function genXMLFe()
     $registroFiscal8707 = params_get("registrofiscal8707");
 
     // Datos receptor
-    $omitir_receptor = params_get("omitir_receptor");        // Deprecated
     $receptorNombre = params_get("receptor_nombre");
     $receptorTipoIdentif = params_get("receptor_tipo_identif");
     $receptorNumIdentif = params_get("receptor_num_identif");
@@ -1055,7 +1054,6 @@ function genXMLNC()
     $registroFiscal8707 = params_get("registrofiscal8707");
 
     // Datos receptor
-    $omitir_receptor = params_get("omitir_receptor");        // Deprecated
     $receptorNombre = params_get("receptor_nombre");
     $receptorTipoIdentif = params_get("receptor_tipo_identif");
     $receptorNumIdentif = params_get("receptor_num_identif");
@@ -1221,7 +1219,7 @@ function genXMLNC()
     }
 
     // only includes receptor in case this comes in data json
-    if ($receptorNumIdentif && $omitir_receptor != 'true') {
+    if ($receptorNombre) {
         $xmlString .= '<Receptor>
             <Nombre>' . $receptorNombre . '</Nombre>';
 
@@ -1937,7 +1935,6 @@ function genXMLND()
     $registroFiscal8707 = params_get("registrofiscal8707");
 
     // Datos receptor
-    $omitir_receptor = params_get("omitir_receptor");        // Deprecated
     $receptorNombre = params_get("receptor_nombre");
     $receptorTipoIdentif = params_get("receptor_tipo_identif");
     $receptorNumIdentif = params_get("receptor_num_identif");
@@ -2101,7 +2098,7 @@ function genXMLND()
         error_log(sprintf("Invalid email format: '%s' does not meet the regex pattern: %s", $emisorEmail, EMAIL_REGEX));
     }
 
-    if ($omitir_receptor != 'true') {
+    if ($receptorNombre) {
         $xmlString .= '<Receptor>
             <Nombre>' . $receptorNombre . '</Nombre>';
 
@@ -2814,7 +2811,6 @@ function genXMLTE()
     $registroFiscal8707 = params_get("registrofiscal8707");
 
     // Datos receptor
-    $omitir_receptor = params_get("omitir_receptor");        // Deprecated
     $receptorNombre = params_get("receptor_nombre");
     $receptorTipoIdentif = params_get("receptor_tipo_identif");
     $receptorNumIdentif = params_get("receptor_num_identif");
@@ -3734,7 +3730,6 @@ function genXMLFec()
     $registroFiscal8707 = params_get("registrofiscal8707");
 
     // Datos receptor
-    $omitir_receptor = params_get("omitir_receptor");        // Deprecated
     $receptorNombre = params_get("receptor_nombre");
     $receptorTipoIdentif = params_get("receptor_tipo_identif");
     $receptorNumIdentif = params_get("receptor_num_identif");
