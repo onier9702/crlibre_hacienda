@@ -3839,8 +3839,11 @@ function genXMLFec()
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <Clave>' . $clave . '</Clave>
-        <ProveedorSistemas>' . $proveedorSistemas . '</ProveedorSistemas>
-        <CodigoActividadEmisor>' . $codigoActividadEmisor . '</CodigoActividadEmisor>
+        <ProveedorSistemas>' . $proveedorSistemas . '</ProveedorSistemas>' .
+        (!empty(params_get("codigo_actividad_emisor"))
+            ? '
+        <CodigoActividadEmisor>' . $codigoActividadEmisor . '</CodigoActividadEmisor>'
+            : '') . '
         <CodigoActividadReceptor>' . $codigoActividadReceptor . '</CodigoActividadReceptor>
         <NumeroConsecutivo>' . $consecutivo . '</NumeroConsecutivo>
         <FechaEmision>' . $fechaEmision . '</FechaEmision>
@@ -3889,11 +3892,11 @@ function genXMLFec()
     }
 
     if ($emisorEmail != '' && preg_match(EMAIL_REGEX, trim($emisorEmail))) {
-        $xmlString .= '<CorreoElectronico>' . trim($emisorEmail) . '</CorreoElectronico></Emisor>';
-    } else {
+        $xmlString .= '<CorreoElectronico>' . trim($emisorEmail) . '</CorreoElectronico>';
+    } elseif ($emisorEmail != '') {
         error_log(sprintf("Invalid email format: '%s' does not meet the regex pattern: %s", $emisorEmail, EMAIL_REGEX));
     }
-
+    $xmlString .= '</Emisor>';
 
     $xmlString .= '<Receptor>
         <Nombre>' . $receptorNombre . '</Nombre>';
