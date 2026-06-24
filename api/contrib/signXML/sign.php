@@ -28,7 +28,7 @@ function signFE()
     $pinP12 = params_get('pinP12');
     $inXml = params_get('inXml');
     $tipoDoc = params_get('tipodoc');
-    $tipos = array("FE", "ND", "NC", "TE", "FEC", "CCE", "CPCE", "RCE");
+    $tipos = array("FE", "ND", "NC", "TE", "FEC", "REP", "CCE", "CPCE", "RCE");
 
     if (in_array($tipoDoc, $tipos)) {
         switch ($tipoDoc) {
@@ -46,6 +46,9 @@ function signFE()
                 break;
             case 'FEC': // Factura Electronica de Compra
                 $tipoDocumento = "08";
+                break;
+            case 'REP': // Recibo Electronico de Pago
+                $tipoDocumento = "10";
                 break;
             case 'CCE': // Confirmacion Comprabante Electronico
                 $tipoDocumento = "05";

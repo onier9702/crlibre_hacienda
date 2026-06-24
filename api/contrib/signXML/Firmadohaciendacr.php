@@ -33,7 +33,8 @@ class Firmadocr
         '05' => "mensajeReceptor",
         '06' => "mensajeReceptor",
         '07' => "mensajeReceptor",
-        '08' => "facturaElectronicaCompra"
+        '08' => "facturaElectronicaCompra",
+        '10' => "reciboElectronicoPago"
     );
     
     private static $POLITICA_FIRMA = array(
@@ -304,6 +305,9 @@ class Firmadocr
         } elseif ($this->tipoDoc == '08') {
             $buscar = '</FacturaElectronicaCompra>';
             $remplazar = $sig."</FacturaElectronicaCompra>";
+        } elseif ($this->tipoDoc == '10') {
+            $buscar = '</ReciboElectronicoPago>';
+            $remplazar = $sig."</ReciboElectronicoPago>";
         } elseif ($this->tipoDoc == '05' || $this->tipoDoc == '06' || $this->tipoDoc == '07') {
             $buscar = '</MensajeReceptor>';
             $remplazar = $sig."</MensajeReceptor>";

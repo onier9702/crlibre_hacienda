@@ -4446,6 +4446,222 @@ function genXMLFec()
     return $arrayResp;
 }
 
+// Recibo Electrónico de Pago (REP) — tipo de comprobante 10. Liquida (total o
+// parcialmente) una factura emitida bajo condición 08 ó 10; el IVA en suspenso
+// se devenga al emitir este recibo. Estructura mínima del XSD v4.4: líneas
+// proporcionales al abono + ResumenFactura + InformacionReferencia a la factura
+// original (clave de 50 dígitos). El bloque <Signature> lo inserta el firmador.
+function genXMLRep()
+{
+    // Datos contribuyente
+    $clave = params_get("clave");
+    $proveedorSistemas = params_get("proveedor_sistemas");
+    $consecutivo = params_get("consecutivo");
+    $fechaEmision = params_get("fecha_emision");
+
+    // Datos emisor (quien emitió la factura original y ahora recibe el pago)
+    $emisorNombre = params_get("emisor_nombre");
+    $emisorTipoIdentif = params_get("emisor_tipo_identif");
+    $emisorNumIdentif = params_get("emisor_num_identif");
+    $emisorNombreComercial = params_get("emisor_nombre_comercial");
+    $emisorProv = params_get("emisor_provincia");
+    $emisorCanton = params_get("emisor_canton");
+    $emisorDistrito = params_get("emisor_distrito");
+    $emisorBarrio = params_get("emisor_barrio");
+    $emisorOtrasSenas = params_get("emisor_otras_senas");
+    $emisorCodPaisTel = params_get("emisor_cod_pais_tel");
+    $emisorTel = params_get("emisor_tel");
+    $emisorEmail = params_get("emisor_email");
+
+    // Datos receptor (el cliente que paga)
+    $receptorNombre = params_get("receptor_nombre");
+    $receptorTipoIdentif = params_get("receptor_tipo_identif");
+    $receptorNumIdentif = params_get("receptor_num_identif");
+    $receptorNombreComercial = params_get("receptor_nombre_comercial");
+    $receptorProvincia = params_get("receptor_provincia");
+    $receptorCanton = params_get("receptor_canton");
+    $receptorDistrito = params_get("receptor_distrito");
+    $receptorBarrio = params_get("receptor_barrio");
+    $receptorOtrasSenas = params_get("receptor_otras_senas");
+    $receptorCodPaisTel = params_get("receptor_cod_pais_tel");
+    $receptorTel = params_get("receptor_tel");
+    $receptorEmail = params_get("receptor_email");
+
+    // Detalle del recibo
+    $condVenta = params_get("condicion_venta"); // 09 (pago Estado) ó 11 (pago crédito IVA 90 días)
+    $codMoneda = params_get("cod_moneda");
+    $tipoCambio = params_get("tipo_cambio");
+    $totalVentas = params_get("total_ventas");
+    $totalVentasNeta = params_get("total_ventas_neta");
+    $totalImp = params_get("total_impuestos");
+    $totalComprobante = params_get("total_comprobante");
+
+    $detalles = json_decode(params_get("detalles"));
+    $informacionReferencia = json_decode(params_get("informacion_referencia"));
+    $mediosPago = json_decode(params_get("medios_pago"));
+    $totalDesgloseImpuesto = json_decode(params_get("totalDesgloseImpuesto"));
+
+    if (isset($mediosPago) && $mediosPago != "") {
+        if (count($mediosPago) > 4) {
+            error_log("mediosPago: " . count($mediosPago) . " is greater than 4");
+            $mediosPago = array_slice($mediosPago, 0, 4);
+        }
+    }
+
+    $xmlString = '<?xml version = "1.0" encoding = "utf-8"?>
+    <ReciboElectronicoPago
+    xmlns="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/reciboElectronicoPago"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <Clave>' . $clave . '</Clave>
+        <ProveedorSistemas>' . $proveedorSistemas . '</ProveedorSistemas>
+        <NumeroConsecutivo>' . $consecutivo . '</NumeroConsecutivo>
+        <FechaEmision>' . $fechaEmision . '</FechaEmision>
+        <Emisor>
+            <Nombre>' . $emisorNombre . '</Nombre>
+            <Identificacion>
+                <Tipo>' . $emisorTipoIdentif . '</Tipo>
+                <Numero>' . $emisorNumIdentif . '</Numero>
+            </Identificacion>';
+
+    // EmisorType del REP = Nombre + Identificacion + CorreoElectronico (NO lleva
+    // NombreComercial / Ubicacion / Telefono — a diferencia de la FE/FEC).
+    if ($emisorEmail != '' && preg_match(EMAIL_REGEX, trim($emisorEmail))) {
+        $xmlString .= '<CorreoElectronico>' . trim($emisorEmail) . '</CorreoElectronico>';
+    }
+    $xmlString .= '</Emisor>';
+
+    $xmlString .= '<Receptor>
+        <Nombre>' . $receptorNombre . '</Nombre>
+        <Identificacion>
+            <Tipo>' . $receptorTipoIdentif . '</Tipo>
+            <Numero>' . $receptorNumIdentif . '</Numero>
+        </Identificacion>';
+    // ReceptorType del REP = Nombre + Identificacion + CorreoElectronico (opcional).
+    if ($receptorEmail != '') {
+        $xmlString .= '<CorreoElectronico>' . $receptorEmail . '</CorreoElectronico>';
+    }
+    $xmlString .= '</Receptor>';
+
+    $xmlString .= '<CondicionVenta>' . $condVenta . '</CondicionVenta>';
+
+    // Detalle del servicio: líneas proporcionales al abono recibido.
+    $xmlString .= '<DetalleServicio>';
+    $l = 1;
+    foreach ($detalles as $d) {
+        $xmlString .= '<LineaDetalle>
+            <NumeroLinea>' . $l . '</NumeroLinea>
+            <Detalle>' . $d->detalle . '</Detalle>
+            <MontoTotal>' . $d->montoTotal . '</MontoTotal>
+            <SubTotal>' . $d->subTotal . '</SubTotal>';
+        if (isset($d->impuesto) && !empty($d->impuesto)) {
+            foreach ($d->impuesto as $i) {
+                $xmlString .= '<Impuesto>';
+                $xmlString .= '<Codigo>' . $i->codigo . '</Codigo>';
+                if (isset($i->codigoTarifa) && $i->codigoTarifa != "") {
+                    $xmlString .= '<CodigoTarifaIVA>' . $i->codigoTarifa . '</CodigoTarifaIVA>';
+                }
+                if (isset($i->tarifa) && $i->tarifa != "") {
+                    $xmlString .= '<Tarifa>' . $i->tarifa . '</Tarifa>';
+                }
+                // El ImpuestoType del REP NO admite <Exoneracion>: el monto ya
+                // es el IVA NETO realmente cobrado (0 en líneas exoneradas).
+                $xmlString .= '<Monto>' . $i->monto . '</Monto>';
+                $xmlString .= '</Impuesto>';
+            }
+        }
+        $xmlString .= '<ImpuestoNeto>' . $d->impuestoNeto . '</ImpuestoNeto>';
+        $xmlString .= '<MontoTotalLinea>' . $d->montoTotalLinea . '</MontoTotalLinea>';
+        $xmlString .= '</LineaDetalle>';
+        $l++;
+    }
+    $xmlString .= '</DetalleServicio>';
+
+    // ResumenFactura
+    $xmlString .= '<ResumenFactura>';
+    if ($codMoneda != '' && $codMoneda != 'CRC' && $tipoCambio != '' && $tipoCambio != 0) {
+        $xmlString .= '<CodigoTipoMoneda><CodigoMoneda>' . $codMoneda . '</CodigoMoneda><TipoCambio>' . $tipoCambio . '</TipoCambio></CodigoTipoMoneda>';
+    } else {
+        $xmlString .= '<CodigoTipoMoneda><CodigoMoneda>CRC</CodigoMoneda><TipoCambio>1</TipoCambio></CodigoTipoMoneda>';
+    }
+    $xmlString .= '<TotalVenta>' . $totalVentas . '</TotalVenta>';
+    $xmlString .= '<TotalVentaNeta>' . $totalVentasNeta . '</TotalVentaNeta>';
+    if (isset($totalDesgloseImpuesto) && !empty($totalDesgloseImpuesto)) {
+        foreach ($totalDesgloseImpuesto as $impuesto) {
+            $xmlString .= '<TotalDesgloseImpuesto>';
+            if (isset($impuesto->Codigo)) {
+                $xmlString .= '<Codigo>' . $impuesto->Codigo . '</Codigo>';
+            }
+            if (isset($impuesto->CodigoTarifaIVA)) {
+                $xmlString .= '<CodigoTarifaIVA>' . $impuesto->CodigoTarifaIVA . '</CodigoTarifaIVA>';
+            }
+            if (isset($impuesto->TotalMontoImpuesto)) {
+                $xmlString .= '<TotalMontoImpuesto>' . $impuesto->TotalMontoImpuesto . '</TotalMontoImpuesto>';
+            }
+            $xmlString .= '</TotalDesgloseImpuesto>';
+        }
+    }
+    if ($totalImp != '') {
+        $xmlString .= '<TotalImpuesto>' . $totalImp . '</TotalImpuesto>';
+    }
+    if (isset($mediosPago) && !empty($mediosPago)) {
+        foreach ($mediosPago as $o) {
+            $xmlString .= '<MedioPago>';
+            if (isset($o->tipoMedioPago) && !empty($o->tipoMedioPago)) {
+                $xmlString .= '<TipoMedioPago>' . $o->tipoMedioPago . '</TipoMedioPago>';
+            }
+            if (isset($o->tipoMedioPago) && $o->tipoMedioPago === "99" && isset($o->medioPagoOtros) && !empty($o->medioPagoOtros)) {
+                $xmlString .= '<MedioPagoOtros>' . htmlspecialchars($o->medioPagoOtros) . '</MedioPagoOtros>';
+            }
+            if (isset($o->totalMedioPago) && is_numeric($o->totalMedioPago)) {
+                $xmlString .= '<TotalMedioPago>' . number_format($o->totalMedioPago, 2, '.', '') . '</TotalMedioPago>';
+            }
+            $xmlString .= '</MedioPago>';
+        }
+    }
+    $xmlString .= '<TotalComprobante>' . $totalComprobante . '</TotalComprobante>';
+    $xmlString .= '</ResumenFactura>';
+
+    // InformacionReferencia: enlace 1:1 a la factura original (clave 50 dígitos).
+    if (is_array($informacionReferencia) && count($informacionReferencia) > 0) {
+        foreach ($informacionReferencia as $ref) {
+            if (!empty($ref->tipoDoc) && !empty($ref->fechaEmision)) {
+                if (in_array($ref->tipoDoc, TIPODOCREFVALUES, true)) {
+                    $xmlString .= '<InformacionReferencia>';
+                    $xmlString .= '<TipoDocIR>' . $ref->tipoDoc . '</TipoDocIR>';
+                    if ($ref->tipoDoc === '99' && isset($ref->tipoDocOtro)) {
+                        $xmlString .= '<TipoDocRefOTRO>' . htmlspecialchars($ref->tipoDocOtro) . '</TipoDocRefOTRO>';
+                    }
+                    if (isset($ref->numero)) {
+                        $xmlString .= '<Numero>' . $ref->numero . '</Numero>';
+                    }
+                    $xmlString .= '<FechaEmisionIR>' . $ref->fechaEmision . '</FechaEmisionIR>';
+                    if (isset($ref->codigo)) {
+                        $xmlString .= '<Codigo>' . $ref->codigo . '</Codigo>';
+                        if ($ref->codigo === '99' && isset($ref->codigoOtro)) {
+                            $xmlString .= '<CodigoReferenciaOTRO>' . htmlspecialchars($ref->codigoOtro) . '</CodigoReferenciaOTRO>';
+                        }
+                    }
+                    if (isset($ref->razon)) {
+                        $xmlString .= '<Razon>' . $ref->razon . '</Razon>';
+                    }
+                    $xmlString .= '</InformacionReferencia>';
+                } else {
+                    grace_error("El parámetro tipoDoc no cumple con la estructura establecida. tipoDoc = " . $ref->tipoDoc);
+                }
+            }
+        }
+    }
+
+    $xmlString .= '</ReciboElectronicoPago>';
+    $arrayResp = array(
+        "clave" => $clave,
+        "xml" => base64_encode($xmlString)
+    );
+
+    return $arrayResp;
+}
+
 function genXMLFee()
 {
     $clave = params_get("clave");
