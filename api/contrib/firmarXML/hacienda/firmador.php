@@ -51,19 +51,25 @@ class Firmador {
         // =========================
         // LOAD CERTIFICATE (FIXED)
         // =========================
+        if (!$pfx || !is_file($pfx)) {
+            return [
+                "error" => "No se encontró el certificado .p12 del emisor. Vuelva a subirlo en la Configuración de Hacienda."
+            ];
+        }
+
         $pfxContent = file_get_contents($pfx);
 
         $certs = [];
         if (!openssl_pkcs12_read($pfxContent, $certs, $pin)) {
             return [
-                "error" => "openssl_pkcs12_read failed",
+                "error" => "No se pudo abrir el certificado .p12. Verifique el PIN del certificado.",
                 "openssl_error" => openssl_error_string()
             ];
         }
 
         if (!isset($certs['pkey']) || !isset($certs['cert'])) {
             return [
-                "error" => "Certificate missing pkey or cert"
+                "error" => "El certificado .p12 no contiene la llave privada o el certificado."
             ];
         }
 
@@ -72,10 +78,14 @@ class Firmador {
         // =========================
         $xml = new \DOMDocument();
 
-        try {
-            $xml->loadXML($input);
-        } catch (\Exception $ex){
-            return ["error" => $ex->getMessage()];
+        libxml_use_internal_errors(true);
+        libxml_clear_errors();
+        if ($input === '' || !$xml->loadXML($input)) {
+            $xmlError = libxml_get_last_error();
+            libxml_clear_errors();
+            return [
+                "error" => "El XML del comprobante no es válido y no se pudo firmar." . ($xmlError ? " " . trim($xmlError->message) . " (línea " . $xmlError->line . ")" : "")
+            ];
         }
 
         // =========================

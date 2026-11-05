@@ -13,7 +13,18 @@ function firmar()
 	$firmador = new Firmador();
 
 	// Se firma XML y se recibe un string resultado en Base64
-	$base64 = $firmador->firmarXml($pfx, $pin, base64_decode($xml), $firmador::TO_BASE64_STRING);
+	try {
+		$base64 = $firmador->firmarXml($pfx, $pin, base64_decode($xml), $firmador::TO_BASE64_STRING);
+	} catch (\Throwable $e) {
+		error_log("firmar: " . $e->getMessage());
+		$base64 = array("error" => "No se pudo firmar el XML: " . $e->getMessage());
+	}
+
+	if (is_array($base64)) {
+		$detalle = isset($base64["openssl_error"]) ? " (" . $base64["openssl_error"] . ")" : "";
+		tools_reply($base64["error"] . $detalle, true);
+	}
+
 	return array("xmlFirmado" => $base64);
 	// print_r($base64);
 
