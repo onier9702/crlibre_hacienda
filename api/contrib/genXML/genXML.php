@@ -30,6 +30,11 @@ const RECEPTOROTRASSENASMAXSIZE = 250;
 const RECEPTOROTRASSENASEXTRANJEROMAXSIZE = 300;
 const EMAIL_REGEX = "/^\s*\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*\s*$/";
 
+function genXMLEscape($value)
+{
+    return htmlspecialchars((string) $value, ENT_NOQUOTES | ENT_XML1 | ENT_SUBSTITUTE, 'UTF-8');
+}
+
 
 /* * ************************************************** */
 /* Funcion para generar XML                          */
@@ -184,7 +189,7 @@ function genXMLFe()
         <NumeroConsecutivo>' . $consecutivo . '</NumeroConsecutivo>
         <FechaEmision>' . $fechaEmision . '</FechaEmision>
         <Emisor>
-            <Nombre>' . $emisorNombre . '</Nombre>
+            <Nombre>' . genXMLEscape($emisorNombre) . '</Nombre>
             <Identificacion>
                 <Tipo>' . $emisorTipoIdentif . '</Tipo>
                 <Numero>' . $emisorNumIdentif . '</Numero>
@@ -197,7 +202,7 @@ function genXMLFe()
 
     if (isset($emisorNombreComercial) && $emisorNombreComercial != "") {
         $xmlString .= '
-        <NombreComercial>' . $emisorNombreComercial . '</NombreComercial>';
+        <NombreComercial>' . genXMLEscape($emisorNombreComercial) . '</NombreComercial>';
     }
 
     if ($emisorProv != '' && $emisorCanton != '' && $emisorDistrito != '' && $emisorOtrasSenas != '') {
@@ -207,10 +212,10 @@ function genXMLFe()
             <Canton>' . $emisorCanton . '</Canton>
             <Distrito>' . $emisorDistrito . '</Distrito>';
         if ($emisorBarrio != '') {
-            $xmlString .= '<Barrio>' . $emisorBarrio . '</Barrio>';
+            $xmlString .= '<Barrio>' . genXMLEscape($emisorBarrio) . '</Barrio>';
         }
         $xmlString .= '
-                <OtrasSenas>' . $emisorOtrasSenas . '</OtrasSenas>
+                <OtrasSenas>' . genXMLEscape($emisorOtrasSenas) . '</OtrasSenas>
             </Ubicacion>';
     }
 
@@ -229,7 +234,7 @@ function genXMLFe()
     }
 
     $xmlString .= '<Receptor>
-        <Nombre>' . $receptorNombre . '</Nombre>';
+        <Nombre>' . genXMLEscape($receptorNombre) . '</Nombre>';
 
     $xmlString .= '
         <Identificacion>
@@ -239,7 +244,7 @@ function genXMLFe()
 
     if (isset($receptorNombreComercial) && $receptorNombreComercial != "") {
         $xmlString .= '
-            <NombreComercial>' . $receptorNombreComercial . '</NombreComercial>';
+            <NombreComercial>' . genXMLEscape($receptorNombreComercial) . '</NombreComercial>';
     }
 
     if ($receptorProvincia != '' && $receptorCanton != '' && $receptorDistrito != '' && $receptorOtrasSenas != '') {
@@ -249,17 +254,17 @@ function genXMLFe()
                 <Canton>' . $receptorCanton . '</Canton>
                 <Distrito>' . $receptorDistrito . '</Distrito>';
         if ($receptorBarrio != '') {
-            $xmlString .= '<Barrio>' . $receptorBarrio . '</Barrio>';
+            $xmlString .= '<Barrio>' . genXMLEscape($receptorBarrio) . '</Barrio>';
         }
         $xmlString .= '
-                <OtrasSenas>' . $receptorOtrasSenas . '</OtrasSenas>
+                <OtrasSenas>' . genXMLEscape($receptorOtrasSenas) . '</OtrasSenas>
             </Ubicacion>';
     }
 
     if ($receptorOtrasSenasExtranjero != '' && strlen($receptorOtrasSenasExtranjero) <= RECEPTOROTRASSENASEXTRANJEROMAXSIZE) {
         $xmlString .= '
             <OtrasSenasExtranjero>'
-            . $receptorOtrasSenasExtranjero .
+            . genXMLEscape($receptorOtrasSenasExtranjero) .
             '</OtrasSenasExtranjero>';
     }
 
@@ -272,7 +277,7 @@ function genXMLFe()
     }
 
     if ($receptorEmail != '') {
-        $xmlString .= '<CorreoElectronico>' . $receptorEmail . '</CorreoElectronico>';
+        $xmlString .= '<CorreoElectronico>' . genXMLEscape($receptorEmail) . '</CorreoElectronico>';
     }
 
     $xmlString .= '</Receptor>';
@@ -282,7 +287,7 @@ function genXMLFe()
 
     if (isset($condVentaOtros) && $condVentaOtros != "") {
         $xmlString .= '
-        <CondicionVentaOtros>' . $condVentaOtros . '</CondicionVentaOtros>';
+        <CondicionVentaOtros>' . genXMLEscape($condVentaOtros) . '</CondicionVentaOtros>';
     }
 
     if (isset($plazoCredito) && $plazoCredito != "") {
@@ -457,7 +462,7 @@ function genXMLFe()
                     $xmlString .= '
                         <CodigoComercial>
                             <Tipo>' . $c['tipo'] . '</Tipo>
-                            <Codigo>' . $c['codigo'] . '</Codigo>
+                            <Codigo>' . genXMLEscape($c['codigo']) . '</Codigo>
                         </CodigoComercial>';
                 }
             }
@@ -472,12 +477,12 @@ function genXMLFe()
         }
         if (isset($d->unidadMedidaComercial) && $d->unidadMedidaComercial != "") {
             $xmlString .= '
-                <UnidadMedidaComercial>' . $d->unidadMedidaComercial . '</UnidadMedidaComercial>';
+                <UnidadMedidaComercial>' . genXMLEscape($d->unidadMedidaComercial) . '</UnidadMedidaComercial>';
         }
         $xmlString .= '
-            <Detalle>' . $d->detalle . '</Detalle>';
+            <Detalle>' . genXMLEscape($d->detalle) . '</Detalle>';
         if (isset($d->numeroVINoSerie) && $d->numeroVINoSerie != "") {
-            $xmlString .= '<NumeroVINoSerie>' . $d->numeroVINoSerie . '</NumeroVINoSerie>';
+            $xmlString .= '<NumeroVINoSerie>' . genXMLEscape($d->numeroVINoSerie) . '</NumeroVINoSerie>';
         }
 
         if (isset($d->registroMedicamento) && $d->registroMedicamento !== "") {
@@ -498,16 +503,16 @@ function genXMLFe()
                     foreach ($codigos as $codigo) {
                         $xmlString .= '<CodigoComercialSurtido>';
                         $xmlString .= '<TipoSurtido>' . $codigo->tipoSurtido . '</TipoSurtido>';
-                        $xmlString .= '<CodigoSurtido>' . $codigo->codigoSurtido . '</CodigoSurtido>';
+                        $xmlString .= '<CodigoSurtido>' . genXMLEscape($codigo->codigoSurtido) . '</CodigoSurtido>';
                         $xmlString .= '</CodigoComercialSurtido>';
                     }
                 }
                 $xmlString .= '<CantidadSurtido>' . $linea->cantidadSurtido . '</CantidadSurtido>';
                 $xmlString .= '<UnidadMedidaSurtido>' . $linea->unidadMedidaSurtido . '</UnidadMedidaSurtido>';
                 if (isset($linea->unidadMedidaComercialSurtido)) {
-                    $xmlString .= '<UnidadMedidaComercialSurtido>' . $linea->unidadMedidaComercialSurtido . '</UnidadMedidaComercialSurtido>';
+                    $xmlString .= '<UnidadMedidaComercialSurtido>' . genXMLEscape($linea->unidadMedidaComercialSurtido) . '</UnidadMedidaComercialSurtido>';
                 }
-                $xmlString .= '<DetalleSurtido>' . $linea->detalleSurtido . '</DetalleSurtido>';
+                $xmlString .= '<DetalleSurtido>' . genXMLEscape($linea->detalleSurtido) . '</DetalleSurtido>';
                 $xmlString .= '<PrecioUnitarioSurtido>' . $linea->precioUnitarioSurtido . '</PrecioUnitarioSurtido>';
                 $xmlString .= '<MontoTotalSurtido>' . $linea->montoTotalSurtido . '</MontoTotalSurtido>';
                 if (isset($linea->descuentoSurtido) && is_array($linea->descuentoSurtido)) {
@@ -517,7 +522,7 @@ function genXMLFe()
                         $xmlString .= '<MontoDescuentoSurtido>' . $desc->montoDescuentoSurtido . '</MontoDescuentoSurtido>';
                         $xmlString .= '<CodigoDescuentoSurtido>' . $desc->codigoDescuentoSurtido . '</CodigoDescuentoSurtido>';
                         if (isset($desc->descuentoSurtidoOtros)) {
-                            $xmlString .= '<DescuentoSurtidoOtros>' . $desc->descuentoSurtidoOtros . '</DescuentoSurtidoOtros>';
+                            $xmlString .= '<DescuentoSurtidoOtros>' . genXMLEscape($desc->descuentoSurtidoOtros) . '</DescuentoSurtidoOtros>';
                         }
                         $xmlString .= '</DescuentoSurtido>';
                     }
@@ -533,7 +538,7 @@ function genXMLFe()
                         $xmlString .= '<ImpuestoSurtido>';
                         $xmlString .= '<CodigoImpuestoSurtido>' . $imp->codigoImpuestoSurtido . '</CodigoImpuestoSurtido>';
                         if (isset($imp->codigoImpuestoOTROSurtido)) {
-                            $xmlString .= '<CodigoImpuestoOTROSurtido>' . $imp->codigoImpuestoOTROSurtido . '</CodigoImpuestoOTROSurtido>';
+                            $xmlString .= '<CodigoImpuestoOTROSurtido>' . genXMLEscape($imp->codigoImpuestoOTROSurtido) . '</CodigoImpuestoOTROSurtido>';
                         }
                         if (isset($imp->codigoTarifaIVASurtido)) {
                             $xmlString .= '<CodigoTarifaIVASurtido>' . $imp->codigoTarifaIVASurtido . '</CodigoTarifaIVASurtido>';
@@ -635,7 +640,7 @@ function genXMLFe()
                     isset($i->codigo) && $i->codigo == "99" &&
                     isset($i->codigoImpuestoOtro) && !empty($i->codigoImpuestoOtro)
                 ) {
-                    $xmlString .= '<CodigoImpuestoOTRO>' . $i->codigoImpuestoOtro . '</CodigoImpuestoOTRO>';
+                    $xmlString .= '<CodigoImpuestoOTRO>' . genXMLEscape($i->codigoImpuestoOtro) . '</CodigoImpuestoOTRO>';
                 }
 
                 if (isset($i->codigoTarifa) && $i->codigoTarifa != "") {
@@ -683,18 +688,18 @@ function genXMLFe()
                     <Exoneracion>
                         <TipoDocumentoEX1>' . $i->exoneracion->tipoDocumento . '</TipoDocumentoEX1>';
                     if (isset($i->exoneracion->tipoDocumentoOtro) && !empty($i->exoneracion->tipoDocumentoOtro)) {
-                        $xmlString .= '<TipoDocumentoOTRO>' . $i->exoneracion->tipoDocumentoOtro . '</TipoDocumentoOTRO>';
+                        $xmlString .= '<TipoDocumentoOTRO>' . genXMLEscape($i->exoneracion->tipoDocumentoOtro) . '</TipoDocumentoOTRO>';
                     }
-                    $xmlString .= '<NumeroDocumento>' . $i->exoneracion->numeroDocumento . '</NumeroDocumento>';
+                    $xmlString .= '<NumeroDocumento>' . genXMLEscape($i->exoneracion->numeroDocumento) . '</NumeroDocumento>';
                     if (isset($i->exoneracion->numeroArticulo) && !empty($i->exoneracion->numeroArticulo)) {
-                        $xmlString .= '<Articulo>' . $i->exoneracion->numeroArticulo . '</Articulo>';
+                        $xmlString .= '<Articulo>' . genXMLEscape($i->exoneracion->numeroArticulo) . '</Articulo>';
                     }
                     if (isset($i->exoneracion->numeroInciso)) {
-                        $xmlString .= '<Inciso>' . $i->exoneracion->numeroInciso . '</Inciso>';
+                        $xmlString .= '<Inciso>' . genXMLEscape($i->exoneracion->numeroInciso) . '</Inciso>';
                     }
                     $xmlString .= '<NombreInstitucion>' . $i->exoneracion->nombreInstitucion . '</NombreInstitucion>';
                     if (isset($i->exoneracion->nombreInstitucionOtros) && !empty($i->exoneracion->nombreInstitucionOtros)) {
-                        $xmlString .= '<NombreInstitucionOtros>' . $i->exoneracion->nombreInstitucionOtros . '</NombreInstitucionOtros>';
+                        $xmlString .= '<NombreInstitucionOtros>' . genXMLEscape($i->exoneracion->nombreInstitucionOtros) . '</NombreInstitucionOtros>';
                     }
                     $xmlString .= '
                         <FechaEmisionEX>' . $i->exoneracion->fechaEmision . '</FechaEmisionEX>
@@ -723,7 +728,7 @@ function genXMLFe()
             <TipoDocumentoOC>' . $o->tipoDocumentoOC . '</TipoDocumentoOC>';
             if (isset($o->tipoDocumentoOTROS) && $o->tipoDocumentoOTROS != "") {
                 $xmlString .= '
-            <TipoDocumentoOTROS>' . $o->tipoDocumentoOTROS . '</TipoDocumentoOTROS>';
+            <TipoDocumentoOTROS>' . genXMLEscape($o->tipoDocumentoOTROS) . '</TipoDocumentoOTROS>';
             }
             if (isset($o->numeroIdentidadTercero) && $o->numeroIdentidadTercero != "" && isset($o->tipoIdentidadTercero) && $o->tipoIdentidadTercero != "") {
                 $xmlString .= '
@@ -734,10 +739,10 @@ function genXMLFe()
             }
             if (isset($o->nombreTercero) && $o->nombreTercero != "") {
                 $xmlString .= '
-            <NombreTercero>' . $o->nombreTercero . '</NombreTercero>';
+            <NombreTercero>' . genXMLEscape($o->nombreTercero) . '</NombreTercero>';
             }
             $xmlString .= '
-            <Detalle>' . $o->detalle . '</Detalle>';
+            <Detalle>' . genXMLEscape($o->detalle) . '</Detalle>';
             if (isset($o->porcentajeOC) && $o->porcentajeOC != "") {
                 $xmlString .= '
             <PorcentajeOC>' . $o->porcentajeOC . '</PorcentajeOC>';
@@ -913,7 +918,7 @@ function genXMLFe()
                         $xmlString .= '<TipoDocRefOTRO>' . htmlspecialchars($ref->tipoDocOtro) . '</TipoDocRefOTRO>';
                     }
                     if (isset($ref->numero)) {
-                        $xmlString .= '<Numero>' . $ref->numero . '</Numero>';
+                        $xmlString .= '<Numero>' . genXMLEscape($ref->numero) . '</Numero>';
                     }
                     $xmlString .= '<FechaEmisionIR>' . $ref->fechaEmision . '</FechaEmisionIR>';
                     if (isset($ref->codigo)) {
@@ -923,7 +928,7 @@ function genXMLFe()
                         }
                     }
                     if (isset($ref->razon)) {
-                        $xmlString .= '<Razon>' . $ref->razon . '</Razon>';
+                        $xmlString .= '<Razon>' . genXMLEscape($ref->razon) . '</Razon>';
                     }
                     $xmlString .= '</InformacionReferencia>';
                 } else {
@@ -1174,7 +1179,7 @@ function genXMLNC()
     <NumeroConsecutivo>' . $consecutivo . '</NumeroConsecutivo>
     <FechaEmision>' . $fechaEmision . '</FechaEmision>
     <Emisor>
-        <Nombre>' . $emisorNombre . '</Nombre>
+        <Nombre>' . genXMLEscape($emisorNombre) . '</Nombre>
         <Identificacion>
             <Tipo>' . $emisorTipoIdentif . '</Tipo>
             <Numero>' . $emisorNumIdentif . '</Numero>
@@ -1187,7 +1192,7 @@ function genXMLNC()
 
     if (isset($emisorNombreComercial) && $emisorNombreComercial != "") {
         $xmlString .= '
-        <NombreComercial>' . $emisorNombreComercial . '</NombreComercial>';
+        <NombreComercial>' . genXMLEscape($emisorNombreComercial) . '</NombreComercial>';
     }
 
     if ($emisorProv != '' && $emisorCanton != '' && $emisorDistrito != '' && $emisorOtrasSenas != '') {
@@ -1197,10 +1202,10 @@ function genXMLNC()
             <Canton>' . $emisorCanton . '</Canton>
             <Distrito>' . $emisorDistrito . '</Distrito>';
         if ($emisorBarrio != '') {
-            $xmlString .= '<Barrio>' . $emisorBarrio . '</Barrio>';
+            $xmlString .= '<Barrio>' . genXMLEscape($emisorBarrio) . '</Barrio>';
         }
         $xmlString .= '
-                <OtrasSenas>' . $emisorOtrasSenas . '</OtrasSenas>
+                <OtrasSenas>' . genXMLEscape($emisorOtrasSenas) . '</OtrasSenas>
             </Ubicacion>';
     }
 
@@ -1221,7 +1226,7 @@ function genXMLNC()
     // only includes receptor in case this comes in data json
     if ($receptorNombre) {
         $xmlString .= '<Receptor>
-            <Nombre>' . $receptorNombre . '</Nombre>';
+            <Nombre>' . genXMLEscape($receptorNombre) . '</Nombre>';
 
         if ($receptorTipoIdentif != '' && $receptorNumIdentif != '') {
             $xmlString .= '
@@ -1233,7 +1238,7 @@ function genXMLNC()
 
         if (isset($receptorNombreComercial) && $receptorNombreComercial != "") {
             $xmlString .= '
-        <NombreComercial>' . $receptorNombreComercial . '</NombreComercial>';
+        <NombreComercial>' . genXMLEscape($receptorNombreComercial) . '</NombreComercial>';
         }
 
         if ($receptorProvincia != '' && $receptorCanton != '' && $receptorDistrito != '' && $receptorOtrasSenas != '') {
@@ -1244,17 +1249,17 @@ function genXMLNC()
                     <Distrito>' . $receptorDistrito . '</Distrito>';
             if ($receptorBarrio != '') {
                 $xmlString .= '
-                    <Barrio>' . $receptorBarrio . '</Barrio>';
+                    <Barrio>' . genXMLEscape($receptorBarrio) . '</Barrio>';
             }
             $xmlString .= '
-                    <OtrasSenas>' . $receptorOtrasSenas . '</OtrasSenas>
+                    <OtrasSenas>' . genXMLEscape($receptorOtrasSenas) . '</OtrasSenas>
                 </Ubicacion>';
         }
 
         if ($receptorOtrasSenasExtranjero != '' && strlen($receptorOtrasSenasExtranjero) <= RECEPTOROTRASSENASEXTRANJEROMAXSIZE) {
             $xmlString .= '
             <OtrasSenasExtranjero>'
-                . $receptorOtrasSenasExtranjero .
+                . genXMLEscape($receptorOtrasSenasExtranjero) .
                 '</OtrasSenasExtranjero>';
         }
 
@@ -1267,7 +1272,7 @@ function genXMLNC()
         }
 
         if ($receptorEmail != '') {
-            $xmlString .= '<CorreoElectronico>' . $receptorEmail . '</CorreoElectronico>';
+            $xmlString .= '<CorreoElectronico>' . genXMLEscape($receptorEmail) . '</CorreoElectronico>';
         }
 
         $xmlString .= '</Receptor>';
@@ -1278,7 +1283,7 @@ function genXMLNC()
 
     if (isset($condVentaOtros) && $condVentaOtros != "") {
         $xmlString .= '
-        <CondicionVentaOtros>' . $condVentaOtros . '</CondicionVentaOtros>';
+        <CondicionVentaOtros>' . genXMLEscape($condVentaOtros) . '</CondicionVentaOtros>';
     }
 
     if (isset($plazoCredito) && $plazoCredito != "") {
@@ -1327,7 +1332,7 @@ function genXMLNC()
                     $xmlString .= '
                         <CodigoComercial>
                             <Tipo>' . $c['tipo'] . '</Tipo>
-                            <Codigo>' . $c['codigo'] . '</Codigo>
+                            <Codigo>' . genXMLEscape($c['codigo']) . '</Codigo>
                         </CodigoComercial>';
                 }
             }
@@ -1342,12 +1347,12 @@ function genXMLNC()
         }
         if (isset($d->unidadMedidaComercial) && $d->unidadMedidaComercial != "") {
             $xmlString .= '
-                <UnidadMedidaComercial>' . $d->unidadMedidaComercial . '</UnidadMedidaComercial>';
+                <UnidadMedidaComercial>' . genXMLEscape($d->unidadMedidaComercial) . '</UnidadMedidaComercial>';
         }
         $xmlString .= '
-            <Detalle>' . $d->detalle . '</Detalle>';
+            <Detalle>' . genXMLEscape($d->detalle) . '</Detalle>';
         if (isset($d->numeroVINoSerie) && $d->numeroVINoSerie != "") {
-            $xmlString .= '<NumeroVINoSerie>' . $d->numeroVINoSerie . '</NumeroVINoSerie>';
+            $xmlString .= '<NumeroVINoSerie>' . genXMLEscape($d->numeroVINoSerie) . '</NumeroVINoSerie>';
         }
 
         if (isset($d->registroMedicamento) && $d->registroMedicamento !== "") {
@@ -1368,16 +1373,16 @@ function genXMLNC()
                     foreach ($codigos as $codigo) {
                         $xmlString .= '<CodigoComercialSurtido>';
                         $xmlString .= '<TipoSurtido>' . $codigo->tipoSurtido . '</TipoSurtido>';
-                        $xmlString .= '<CodigoSurtido>' . $codigo->codigoSurtido . '</CodigoSurtido>';
+                        $xmlString .= '<CodigoSurtido>' . genXMLEscape($codigo->codigoSurtido) . '</CodigoSurtido>';
                         $xmlString .= '</CodigoComercialSurtido>';
                     }
                 }
                 $xmlString .= '<CantidadSurtido>' . $linea->cantidadSurtido . '</CantidadSurtido>';
                 $xmlString .= '<UnidadMedidaSurtido>' . $linea->unidadMedidaSurtido . '</UnidadMedidaSurtido>';
                 if (isset($linea->unidadMedidaComercialSurtido)) {
-                    $xmlString .= '<UnidadMedidaComercialSurtido>' . $linea->unidadMedidaComercialSurtido . '</UnidadMedidaComercialSurtido>';
+                    $xmlString .= '<UnidadMedidaComercialSurtido>' . genXMLEscape($linea->unidadMedidaComercialSurtido) . '</UnidadMedidaComercialSurtido>';
                 }
-                $xmlString .= '<DetalleSurtido>' . $linea->detalleSurtido . '</DetalleSurtido>';
+                $xmlString .= '<DetalleSurtido>' . genXMLEscape($linea->detalleSurtido) . '</DetalleSurtido>';
                 $xmlString .= '<PrecioUnitarioSurtido>' . $linea->precioUnitarioSurtido . '</PrecioUnitarioSurtido>';
                 $xmlString .= '<MontoTotalSurtido>' . $linea->montoTotalSurtido . '</MontoTotalSurtido>';
                 if (isset($linea->descuentoSurtido) && is_array($linea->descuentoSurtido)) {
@@ -1387,7 +1392,7 @@ function genXMLNC()
                         $xmlString .= '<MontoDescuentoSurtido>' . $desc->montoDescuentoSurtido . '</MontoDescuentoSurtido>';
                         $xmlString .= '<CodigoDescuentoSurtido>' . $desc->codigoDescuentoSurtido . '</CodigoDescuentoSurtido>';
                         if (isset($desc->descuentoSurtidoOtros)) {
-                            $xmlString .= '<DescuentoSurtidoOtros>' . $desc->descuentoSurtidoOtros . '</DescuentoSurtidoOtros>';
+                            $xmlString .= '<DescuentoSurtidoOtros>' . genXMLEscape($desc->descuentoSurtidoOtros) . '</DescuentoSurtidoOtros>';
                         }
                         $xmlString .= '</DescuentoSurtido>';
                     }
@@ -1403,7 +1408,7 @@ function genXMLNC()
                         $xmlString .= '<ImpuestoSurtido>';
                         $xmlString .= '<CodigoImpuestoSurtido>' . $imp->codigoImpuestoSurtido . '</CodigoImpuestoSurtido>';
                         if (isset($imp->codigoImpuestoOTROSurtido)) {
-                            $xmlString .= '<CodigoImpuestoOTROSurtido>' . $imp->codigoImpuestoOTROSurtido . '</CodigoImpuestoOTROSurtido>';
+                            $xmlString .= '<CodigoImpuestoOTROSurtido>' . genXMLEscape($imp->codigoImpuestoOTROSurtido) . '</CodigoImpuestoOTROSurtido>';
                         }
                         if (isset($imp->codigoTarifaIVASurtido)) {
                             $xmlString .= '<CodigoTarifaIVASurtido>' . $imp->codigoTarifaIVASurtido . '</CodigoTarifaIVASurtido>';
@@ -1503,7 +1508,7 @@ function genXMLNC()
                     isset($i->codigo) && $i->codigo == "99" &&
                     isset($i->codigoImpuestoOtro) && !empty($i->codigoImpuestoOtro)
                 ) {
-                    $xmlString .= '<CodigoImpuestoOTRO>' . $i->codigoImpuestoOtro . '</CodigoImpuestoOTRO>';
+                    $xmlString .= '<CodigoImpuestoOTRO>' . genXMLEscape($i->codigoImpuestoOtro) . '</CodigoImpuestoOTRO>';
                 }
 
                 if (isset($i->codigoTarifa) && $i->codigoTarifa != "") {
@@ -1555,18 +1560,18 @@ function genXMLNC()
                     <Exoneracion>
                         <TipoDocumentoEX1>' . $i->exoneracion->tipoDocumento . '</TipoDocumentoEX1>';
                     if (isset($i->exoneracion->tipoDocumentoOtro) && !empty($i->exoneracion->tipoDocumentoOtro)) {
-                        $xmlString .= '<TipoDocumentoOTRO>' . $i->exoneracion->tipoDocumentoOtro . '</TipoDocumentoOTRO>';
+                        $xmlString .= '<TipoDocumentoOTRO>' . genXMLEscape($i->exoneracion->tipoDocumentoOtro) . '</TipoDocumentoOTRO>';
                     }
-                    $xmlString .= '<NumeroDocumento>' . $i->exoneracion->numeroDocumento . '</NumeroDocumento>';
+                    $xmlString .= '<NumeroDocumento>' . genXMLEscape($i->exoneracion->numeroDocumento) . '</NumeroDocumento>';
                     if (isset($i->exoneracion->numeroArticulo) && !empty($i->exoneracion->numeroArticulo)) {
-                        $xmlString .= '<Articulo>' . $i->exoneracion->numeroArticulo . '</Articulo>';
+                        $xmlString .= '<Articulo>' . genXMLEscape($i->exoneracion->numeroArticulo) . '</Articulo>';
                     }
                     if (isset($i->exoneracion->numeroInciso)) {
-                        $xmlString .= '<Inciso>' . $i->exoneracion->numeroInciso . '</Inciso>';
+                        $xmlString .= '<Inciso>' . genXMLEscape($i->exoneracion->numeroInciso) . '</Inciso>';
                     }
                     $xmlString .= '<NombreInstitucion>' . $i->exoneracion->nombreInstitucion . '</NombreInstitucion>';
                     if (isset($i->exoneracion->nombreInstitucionOtros) && !empty($i->exoneracion->nombreInstitucionOtros)) {
-                        $xmlString .= '<NombreInstitucionOtros>' . $i->exoneracion->nombreInstitucionOtros . '</NombreInstitucionOtros>';
+                        $xmlString .= '<NombreInstitucionOtros>' . genXMLEscape($i->exoneracion->nombreInstitucionOtros) . '</NombreInstitucionOtros>';
                     }
                     $xmlString .= '
                         <FechaEmisionEX>' . $i->exoneracion->fechaEmision . '</FechaEmisionEX>
@@ -1597,7 +1602,7 @@ function genXMLNC()
             <TipoDocumentoOC>' . $o->tipoDocumentoOC . '</TipoDocumentoOC>';
             if (isset($o->tipoDocumentoOTROS) && $o->tipoDocumentoOTROS != "") {
                 $xmlString .= '
-            <TipoDocumentoOTROS>' . $o->tipoDocumentoOTROS . '</TipoDocumentoOTROS>';
+            <TipoDocumentoOTROS>' . genXMLEscape($o->tipoDocumentoOTROS) . '</TipoDocumentoOTROS>';
             }
             if (isset($o->numeroIdentidadTercero) && $o->numeroIdentidadTercero != "" && isset($o->tipoIdentidadTercero) && $o->tipoIdentidadTercero != "") {
                 $xmlString .= '
@@ -1608,10 +1613,10 @@ function genXMLNC()
             }
             if (isset($o->nombreTercero) && $o->nombreTercero != "") {
                 $xmlString .= '
-            <NombreTercero>' . $o->nombreTercero . '</NombreTercero>';
+            <NombreTercero>' . genXMLEscape($o->nombreTercero) . '</NombreTercero>';
             }
             $xmlString .= '
-            <Detalle>' . $o->detalle . '</Detalle>';
+            <Detalle>' . genXMLEscape($o->detalle) . '</Detalle>';
             if (isset($o->porcentajeOC) && $o->porcentajeOC != "") {
                 $xmlString .= '
             <PorcentajeOC>' . $o->porcentajeOC . '</PorcentajeOC>';
@@ -1788,7 +1793,7 @@ function genXMLNC()
                         $xmlString .= '<TipoDocRefOTRO>' . htmlspecialchars($ref->tipoDocOtro) . '</TipoDocRefOTRO>';
                     }
                     if (isset($ref->numero)) {
-                        $xmlString .= '<Numero>' . $ref->numero . '</Numero>';
+                        $xmlString .= '<Numero>' . genXMLEscape($ref->numero) . '</Numero>';
                     }
                     $xmlString .= '<FechaEmisionIR>' . $ref->fechaEmision . '</FechaEmisionIR>';
                     if (isset($ref->codigo)) {
@@ -1798,7 +1803,7 @@ function genXMLNC()
                         }
                     }
                     if (isset($ref->razon)) {
-                        $xmlString .= '<Razon>' . $ref->razon . '</Razon>';
+                        $xmlString .= '<Razon>' . genXMLEscape($ref->razon) . '</Razon>';
                     }
                     $xmlString .= '</InformacionReferencia>';
                 } else {
@@ -2054,7 +2059,7 @@ function genXMLND()
     <NumeroConsecutivo>' . $consecutivo . '</NumeroConsecutivo>
     <FechaEmision>' . $fechaEmision . '</FechaEmision>
     <Emisor>
-        <Nombre>' . $emisorNombre . '</Nombre>
+        <Nombre>' . genXMLEscape($emisorNombre) . '</Nombre>
         <Identificacion>
             <Tipo>' . $emisorTipoIdentif . '</Tipo>
             <Numero>' . $emisorNumIdentif . '</Numero>
@@ -2067,7 +2072,7 @@ function genXMLND()
 
     if (isset($emisorNombreComercial) && $emisorNombreComercial != "") {
         $xmlString .= '
-        <NombreComercial>' . $emisorNombreComercial . '</NombreComercial>';
+        <NombreComercial>' . genXMLEscape($emisorNombreComercial) . '</NombreComercial>';
     }
 
     if ($emisorProv != '' && $emisorCanton != '' && $emisorDistrito != '' && $emisorOtrasSenas != '') {
@@ -2077,10 +2082,10 @@ function genXMLND()
             <Canton>' . $emisorCanton . '</Canton>
             <Distrito>' . $emisorDistrito . '</Distrito>';
         if ($emisorBarrio != '') {
-            $xmlString .= '<Barrio>' . $emisorBarrio . '</Barrio>';
+            $xmlString .= '<Barrio>' . genXMLEscape($emisorBarrio) . '</Barrio>';
         }
         $xmlString .= '
-                <OtrasSenas>' . $emisorOtrasSenas . '</OtrasSenas>
+                <OtrasSenas>' . genXMLEscape($emisorOtrasSenas) . '</OtrasSenas>
             </Ubicacion>';
     }
 
@@ -2100,7 +2105,7 @@ function genXMLND()
 
     if ($receptorNombre) {
         $xmlString .= '<Receptor>
-            <Nombre>' . $receptorNombre . '</Nombre>';
+            <Nombre>' . genXMLEscape($receptorNombre) . '</Nombre>';
 
         if ($receptorTipoIdentif != '' && $receptorNumIdentif != '') {
             $xmlString .= '<Identificacion>
@@ -2111,7 +2116,7 @@ function genXMLND()
 
         if (isset($receptorNombreComercial) && $receptorNombreComercial != "") {
             $xmlString .= '
-        <NombreComercial>' . $receptorNombreComercial . '</NombreComercial>';
+        <NombreComercial>' . genXMLEscape($receptorNombreComercial) . '</NombreComercial>';
         }
 
         if ($receptorProvincia != '' && $receptorCanton != '' && $receptorDistrito != '' && $receptorOtrasSenas != '') {
@@ -2121,17 +2126,17 @@ function genXMLND()
                     <Canton>' . $receptorCanton . '</Canton>
                     <Distrito>' . $receptorDistrito . '</Distrito>';
             if ($receptorBarrio != '') {
-                $xmlString .= '<Barrio>' . $receptorBarrio . '</Barrio>';
+                $xmlString .= '<Barrio>' . genXMLEscape($receptorBarrio) . '</Barrio>';
             }
             $xmlString .= '
-                    <OtrasSenas>' . $receptorOtrasSenas . '</OtrasSenas>
+                    <OtrasSenas>' . genXMLEscape($receptorOtrasSenas) . '</OtrasSenas>
                 </Ubicacion>';
         }
 
         if ($receptorOtrasSenasExtranjero != '' && strlen($receptorOtrasSenasExtranjero) <= RECEPTOROTRASSENASEXTRANJEROMAXSIZE) {
             $xmlString .= '
             <OtrasSenasExtranjero>'
-                . $receptorOtrasSenasExtranjero .
+                . genXMLEscape($receptorOtrasSenasExtranjero) .
                 '</OtrasSenasExtranjero>';
         }
 
@@ -2144,7 +2149,7 @@ function genXMLND()
         }
 
         if ($receptorEmail != '') {
-            $xmlString .= '<CorreoElectronico>' . $receptorEmail . '</CorreoElectronico>';
+            $xmlString .= '<CorreoElectronico>' . genXMLEscape($receptorEmail) . '</CorreoElectronico>';
         }
 
         $xmlString .= '</Receptor>';
@@ -2155,7 +2160,7 @@ function genXMLND()
 
     if (isset($condVentaOtros) && $condVentaOtros != "") {
         $xmlString .= '
-        <CondicionVentaOtros>' . $condVentaOtros . '</CondicionVentaOtros>';
+        <CondicionVentaOtros>' . genXMLEscape($condVentaOtros) . '</CondicionVentaOtros>';
     }
 
     if (isset($plazoCredito) && $plazoCredito != "") {
@@ -2205,7 +2210,7 @@ function genXMLND()
                     $xmlString .= '
                         <CodigoComercial>
                             <Tipo>' . $c['tipo'] . '</Tipo>
-                            <Codigo>' . $c['codigo'] . '</Codigo>
+                            <Codigo>' . genXMLEscape($c['codigo']) . '</Codigo>
                         </CodigoComercial>';
                 }
             }
@@ -2220,12 +2225,12 @@ function genXMLND()
         }
         if (isset($d->unidadMedidaComercial) && $d->unidadMedidaComercial != "") {
             $xmlString .= '
-                <UnidadMedidaComercial>' . $d->unidadMedidaComercial . '</UnidadMedidaComercial>';
+                <UnidadMedidaComercial>' . genXMLEscape($d->unidadMedidaComercial) . '</UnidadMedidaComercial>';
         }
         $xmlString .= '
-            <Detalle>' . $d->detalle . '</Detalle>';
+            <Detalle>' . genXMLEscape($d->detalle) . '</Detalle>';
         if (isset($d->numeroVINoSerie) && $d->numeroVINoSerie != "") {
-            $xmlString .= '<NumeroVINoSerie>' . $d->numeroVINoSerie . '</NumeroVINoSerie>';
+            $xmlString .= '<NumeroVINoSerie>' . genXMLEscape($d->numeroVINoSerie) . '</NumeroVINoSerie>';
         }
 
         if (isset($d->registroMedicamento) && $d->registroMedicamento !== "") {
@@ -2246,16 +2251,16 @@ function genXMLND()
                     foreach ($codigos as $codigo) {
                         $xmlString .= '<CodigoComercialSurtido>';
                         $xmlString .= '<TipoSurtido>' . $codigo->tipoSurtido . '</TipoSurtido>';
-                        $xmlString .= '<CodigoSurtido>' . $codigo->codigoSurtido . '</CodigoSurtido>';
+                        $xmlString .= '<CodigoSurtido>' . genXMLEscape($codigo->codigoSurtido) . '</CodigoSurtido>';
                         $xmlString .= '</CodigoComercialSurtido>';
                     }
                 }
                 $xmlString .= '<CantidadSurtido>' . $linea->cantidadSurtido . '</CantidadSurtido>';
                 $xmlString .= '<UnidadMedidaSurtido>' . $linea->unidadMedidaSurtido . '</UnidadMedidaSurtido>';
                 if (isset($linea->unidadMedidaComercialSurtido)) {
-                    $xmlString .= '<UnidadMedidaComercialSurtido>' . $linea->unidadMedidaComercialSurtido . '</UnidadMedidaComercialSurtido>';
+                    $xmlString .= '<UnidadMedidaComercialSurtido>' . genXMLEscape($linea->unidadMedidaComercialSurtido) . '</UnidadMedidaComercialSurtido>';
                 }
-                $xmlString .= '<DetalleSurtido>' . $linea->detalleSurtido . '</DetalleSurtido>';
+                $xmlString .= '<DetalleSurtido>' . genXMLEscape($linea->detalleSurtido) . '</DetalleSurtido>';
                 $xmlString .= '<PrecioUnitarioSurtido>' . $linea->precioUnitarioSurtido . '</PrecioUnitarioSurtido>';
                 $xmlString .= '<MontoTotalSurtido>' . $linea->montoTotalSurtido . '</MontoTotalSurtido>';
                 if (isset($linea->descuentoSurtido) && is_array($linea->descuentoSurtido)) {
@@ -2265,7 +2270,7 @@ function genXMLND()
                         $xmlString .= '<MontoDescuentoSurtido>' . $desc->montoDescuentoSurtido . '</MontoDescuentoSurtido>';
                         $xmlString .= '<CodigoDescuentoSurtido>' . $desc->codigoDescuentoSurtido . '</CodigoDescuentoSurtido>';
                         if (isset($desc->descuentoSurtidoOtros)) {
-                            $xmlString .= '<DescuentoSurtidoOtros>' . $desc->descuentoSurtidoOtros . '</DescuentoSurtidoOtros>';
+                            $xmlString .= '<DescuentoSurtidoOtros>' . genXMLEscape($desc->descuentoSurtidoOtros) . '</DescuentoSurtidoOtros>';
                         }
                         $xmlString .= '</DescuentoSurtido>';
                     }
@@ -2281,7 +2286,7 @@ function genXMLND()
                         $xmlString .= '<ImpuestoSurtido>';
                         $xmlString .= '<CodigoImpuestoSurtido>' . $imp->codigoImpuestoSurtido . '</CodigoImpuestoSurtido>';
                         if (isset($imp->codigoImpuestoOTROSurtido)) {
-                            $xmlString .= '<CodigoImpuestoOTROSurtido>' . $imp->codigoImpuestoOTROSurtido . '</CodigoImpuestoOTROSurtido>';
+                            $xmlString .= '<CodigoImpuestoOTROSurtido>' . genXMLEscape($imp->codigoImpuestoOTROSurtido) . '</CodigoImpuestoOTROSurtido>';
                         }
                         if (isset($imp->codigoTarifaIVASurtido)) {
                             $xmlString .= '<CodigoTarifaIVASurtido>' . $imp->codigoTarifaIVASurtido . '</CodigoTarifaIVASurtido>';
@@ -2381,7 +2386,7 @@ function genXMLND()
                     isset($i->codigo) && $i->codigo == "99" &&
                     isset($i->codigoImpuestoOtro) && !empty($i->codigoImpuestoOtro)
                 ) {
-                    $xmlString .= '<CodigoImpuestoOTRO>' . $i->codigoImpuestoOtro . '</CodigoImpuestoOTRO>';
+                    $xmlString .= '<CodigoImpuestoOTRO>' . genXMLEscape($i->codigoImpuestoOtro) . '</CodigoImpuestoOTRO>';
                 }
 
                 if (isset($i->codigoTarifa) && $i->codigoTarifa != "") {
@@ -2433,18 +2438,18 @@ function genXMLND()
                     <Exoneracion>
                         <TipoDocumentoEX1>' . $i->exoneracion->tipoDocumento . '</TipoDocumentoEX1>';
                     if (isset($i->exoneracion->tipoDocumentoOtro) && !empty($i->exoneracion->tipoDocumentoOtro)) {
-                        $xmlString .= '<TipoDocumentoOTRO>' . $i->exoneracion->tipoDocumentoOtro . '</TipoDocumentoOTRO>';
+                        $xmlString .= '<TipoDocumentoOTRO>' . genXMLEscape($i->exoneracion->tipoDocumentoOtro) . '</TipoDocumentoOTRO>';
                     }
-                    $xmlString .= '<NumeroDocumento>' . $i->exoneracion->numeroDocumento . '</NumeroDocumento>';
+                    $xmlString .= '<NumeroDocumento>' . genXMLEscape($i->exoneracion->numeroDocumento) . '</NumeroDocumento>';
                     if (isset($i->exoneracion->numeroArticulo) && !empty($i->exoneracion->numeroArticulo)) {
-                        $xmlString .= '<Articulo>' . $i->exoneracion->numeroArticulo . '</Articulo>';
+                        $xmlString .= '<Articulo>' . genXMLEscape($i->exoneracion->numeroArticulo) . '</Articulo>';
                     }
                     if (isset($i->exoneracion->numeroInciso)) {
-                        $xmlString .= '<Inciso>' . $i->exoneracion->numeroInciso . '</Inciso>';
+                        $xmlString .= '<Inciso>' . genXMLEscape($i->exoneracion->numeroInciso) . '</Inciso>';
                     }
                     $xmlString .= '<NombreInstitucion>' . $i->exoneracion->nombreInstitucion . '</NombreInstitucion>';
                     if (isset($i->exoneracion->nombreInstitucionOtros) && !empty($i->exoneracion->nombreInstitucionOtros)) {
-                        $xmlString .= '<NombreInstitucionOtros>' . $i->exoneracion->nombreInstitucionOtros . '</NombreInstitucionOtros>';
+                        $xmlString .= '<NombreInstitucionOtros>' . genXMLEscape($i->exoneracion->nombreInstitucionOtros) . '</NombreInstitucionOtros>';
                     }
                     $xmlString .= '
                         <FechaEmisionEX>' . $i->exoneracion->fechaEmision . '</FechaEmisionEX>
@@ -2475,7 +2480,7 @@ function genXMLND()
             <TipoDocumentoOC>' . $o->tipoDocumentoOC . '</TipoDocumentoOC>';
             if (isset($o->tipoDocumentoOTROS) && $o->tipoDocumentoOTROS != "") {
                 $xmlString .= '
-            <TipoDocumentoOTROS>' . $o->tipoDocumentoOTROS . '</TipoDocumentoOTROS>';
+            <TipoDocumentoOTROS>' . genXMLEscape($o->tipoDocumentoOTROS) . '</TipoDocumentoOTROS>';
             }
             if (isset($o->numeroIdentidadTercero) && $o->numeroIdentidadTercero != "" && isset($o->tipoIdentidadTercero) && $o->tipoIdentidadTercero != "") {
                 $xmlString .= '
@@ -2486,10 +2491,10 @@ function genXMLND()
             }
             if (isset($o->nombreTercero) && $o->nombreTercero != "") {
                 $xmlString .= '
-            <NombreTercero>' . $o->nombreTercero . '</NombreTercero>';
+            <NombreTercero>' . genXMLEscape($o->nombreTercero) . '</NombreTercero>';
             }
             $xmlString .= '
-            <Detalle>' . $o->detalle . '</Detalle>';
+            <Detalle>' . genXMLEscape($o->detalle) . '</Detalle>';
             if (isset($o->porcentajeOC) && $o->porcentajeOC != "") {
                 $xmlString .= '
             <PorcentajeOC>' . $o->porcentajeOC . '</PorcentajeOC>';
@@ -2665,7 +2670,7 @@ function genXMLND()
                         $xmlString .= '<TipoDocRefOTRO>' . htmlspecialchars($ref->tipoDocOtro) . '</TipoDocRefOTRO>';
                     }
                     if (isset($ref->numero)) {
-                        $xmlString .= '<Numero>' . $ref->numero . '</Numero>';
+                        $xmlString .= '<Numero>' . genXMLEscape($ref->numero) . '</Numero>';
                     }
                     $xmlString .= '<FechaEmisionIR>' . $ref->fechaEmision . '</FechaEmisionIR>';
                     if (isset($ref->codigo)) {
@@ -2675,7 +2680,7 @@ function genXMLND()
                         }
                     }
                     if (isset($ref->razon)) {
-                        $xmlString .= '<Razon>' . $ref->razon . '</Razon>';
+                        $xmlString .= '<Razon>' . genXMLEscape($ref->razon) . '</Razon>';
                     }
                     $xmlString .= '</InformacionReferencia>';
                 } else {
@@ -2922,7 +2927,7 @@ function genXMLTE()
     <NumeroConsecutivo>' . $consecutivo . '</NumeroConsecutivo>
     <FechaEmision>' . $fechaEmision . '</FechaEmision>
     <Emisor>
-        <Nombre>' . $emisorNombre . '</Nombre>
+        <Nombre>' . genXMLEscape($emisorNombre) . '</Nombre>
         <Identificacion>
             <Tipo>' . $emisorTipoIdentif . '</Tipo>
             <Numero>' . $emisorNumIdentif . '</Numero>
@@ -2935,7 +2940,7 @@ function genXMLTE()
 
     if (isset($emisorNombreComercial) && $emisorNombreComercial != "") {
         $xmlString .= '
-        <NombreComercial>' . $emisorNombreComercial . '</NombreComercial>';
+        <NombreComercial>' . genXMLEscape($emisorNombreComercial) . '</NombreComercial>';
     }
 
     if ($emisorProv != '' && $emisorCanton != '' && $emisorDistrito != '' && $emisorOtrasSenas != '') {
@@ -2945,10 +2950,10 @@ function genXMLTE()
             <Canton>' . $emisorCanton . '</Canton>
             <Distrito>' . $emisorDistrito . '</Distrito>';
         if ($emisorBarrio != '') {
-            $xmlString .= '<Barrio>' . $emisorBarrio . '</Barrio>';
+            $xmlString .= '<Barrio>' . genXMLEscape($emisorBarrio) . '</Barrio>';
         }
         $xmlString .= '
-                <OtrasSenas>' . $emisorOtrasSenas . '</OtrasSenas>
+                <OtrasSenas>' . genXMLEscape($emisorOtrasSenas) . '</OtrasSenas>
             </Ubicacion>';
     }
 
@@ -2968,7 +2973,7 @@ function genXMLTE()
 
     if ($receptorNombre != "" && $receptorEmail != "") {
         $xmlString .= '<Receptor>
-            <Nombre>' . $receptorNombre . '</Nombre>';
+            <Nombre>' . genXMLEscape($receptorNombre) . '</Nombre>';
 
         if ($receptorTipoIdentif != '' && $receptorNumIdentif != '') {
             $xmlString .= '
@@ -2980,7 +2985,7 @@ function genXMLTE()
 
         if (isset($receptorNombreComercial) && $receptorNombreComercial != "") {
             $xmlString .= '
-        <NombreComercial>' . $receptorNombreComercial . '</NombreComercial>';
+        <NombreComercial>' . genXMLEscape($receptorNombreComercial) . '</NombreComercial>';
         }
 
         if ($receptorProvincia != '' && $receptorCanton != '' && $receptorDistrito != '' && $receptorOtrasSenas != '') {
@@ -2991,17 +2996,17 @@ function genXMLTE()
                     <Distrito>' . $receptorDistrito . '</Distrito>';
             if ($receptorBarrio != '') {
                 $xmlString .= '
-                    <Barrio>' . $receptorBarrio . '</Barrio>';
+                    <Barrio>' . genXMLEscape($receptorBarrio) . '</Barrio>';
             }
             $xmlString .= '
-                    <OtrasSenas>' . $receptorOtrasSenas . '</OtrasSenas>
+                    <OtrasSenas>' . genXMLEscape($receptorOtrasSenas) . '</OtrasSenas>
                 </Ubicacion>';
         }
 
         if ($receptorOtrasSenasExtranjero != '' && strlen($receptorOtrasSenasExtranjero) <= RECEPTOROTRASSENASEXTRANJEROMAXSIZE) {
             $xmlString .= '
             <OtrasSenasExtranjero>'
-                . $receptorOtrasSenasExtranjero .
+                . genXMLEscape($receptorOtrasSenasExtranjero) .
                 '</OtrasSenasExtranjero>';
         }
 
@@ -3014,7 +3019,7 @@ function genXMLTE()
         }
 
         if ($receptorEmail != '') {
-            $xmlString .= '<CorreoElectronico>' . $receptorEmail . '</CorreoElectronico>';
+            $xmlString .= '<CorreoElectronico>' . genXMLEscape($receptorEmail) . '</CorreoElectronico>';
         }
 
         $xmlString .= '</Receptor>';
@@ -3025,7 +3030,7 @@ function genXMLTE()
 
     if (isset($condVentaOtros) && $condVentaOtros != "") {
         $xmlString .= '
-        <CondicionVentaOtros>' . $condVentaOtros . '</CondicionVentaOtros>';
+        <CondicionVentaOtros>' . genXMLEscape($condVentaOtros) . '</CondicionVentaOtros>';
     }
 
     if (isset($plazoCredito) && $plazoCredito != "") {
@@ -3071,7 +3076,7 @@ function genXMLTE()
                     $xmlString .= '
                         <CodigoComercial>
                             <Tipo>' . $c['tipo'] . '</Tipo>
-                            <Codigo>' . $c['codigo'] . '</Codigo>
+                            <Codigo>' . genXMLEscape($c['codigo']) . '</Codigo>
                         </CodigoComercial>';
                 }
             }
@@ -3082,12 +3087,12 @@ function genXMLTE()
             <UnidadMedida>' . $d->unidadMedida . '</UnidadMedida>';
         if (isset($d->unidadMedidaComercial) && $d->unidadMedidaComercial != "") {
             $xmlString .= '
-                <UnidadMedidaComercial>' . $d->unidadMedidaComercial . '</UnidadMedidaComercial>';
+                <UnidadMedidaComercial>' . genXMLEscape($d->unidadMedidaComercial) . '</UnidadMedidaComercial>';
         }
         $xmlString .= '
-            <Detalle>' . $d->detalle . '</Detalle>';
+            <Detalle>' . genXMLEscape($d->detalle) . '</Detalle>';
         if (isset($d->numeroVINoSerie) && $d->numeroVINoSerie != "") {
-            $xmlString .= '<NumeroVINoSerie>' . $d->numeroVINoSerie . '</NumeroVINoSerie>';
+            $xmlString .= '<NumeroVINoSerie>' . genXMLEscape($d->numeroVINoSerie) . '</NumeroVINoSerie>';
         }
 
         if (isset($d->registroMedicamento) && $d->registroMedicamento !== "") {
@@ -3108,16 +3113,16 @@ function genXMLTE()
                     foreach ($codigos as $codigo) {
                         $xmlString .= '<CodigoComercialSurtido>';
                         $xmlString .= '<TipoSurtido>' . $codigo->tipoSurtido . '</TipoSurtido>';
-                        $xmlString .= '<CodigoSurtido>' . $codigo->codigoSurtido . '</CodigoSurtido>';
+                        $xmlString .= '<CodigoSurtido>' . genXMLEscape($codigo->codigoSurtido) . '</CodigoSurtido>';
                         $xmlString .= '</CodigoComercialSurtido>';
                     }
                 }
                 $xmlString .= '<CantidadSurtido>' . $linea->cantidadSurtido . '</CantidadSurtido>';
                 $xmlString .= '<UnidadMedidaSurtido>' . $linea->unidadMedidaSurtido . '</UnidadMedidaSurtido>';
                 if (isset($linea->unidadMedidaComercialSurtido)) {
-                    $xmlString .= '<UnidadMedidaComercialSurtido>' . $linea->unidadMedidaComercialSurtido . '</UnidadMedidaComercialSurtido>';
+                    $xmlString .= '<UnidadMedidaComercialSurtido>' . genXMLEscape($linea->unidadMedidaComercialSurtido) . '</UnidadMedidaComercialSurtido>';
                 }
-                $xmlString .= '<DetalleSurtido>' . $linea->detalleSurtido . '</DetalleSurtido>';
+                $xmlString .= '<DetalleSurtido>' . genXMLEscape($linea->detalleSurtido) . '</DetalleSurtido>';
                 $xmlString .= '<PrecioUnitarioSurtido>' . $linea->precioUnitarioSurtido . '</PrecioUnitarioSurtido>';
                 $xmlString .= '<MontoTotalSurtido>' . $linea->montoTotalSurtido . '</MontoTotalSurtido>';
                 if (isset($linea->descuentoSurtido) && is_array($linea->descuentoSurtido)) {
@@ -3127,7 +3132,7 @@ function genXMLTE()
                         $xmlString .= '<MontoDescuentoSurtido>' . $desc->montoDescuentoSurtido . '</MontoDescuentoSurtido>';
                         $xmlString .= '<CodigoDescuentoSurtido>' . $desc->codigoDescuentoSurtido . '</CodigoDescuentoSurtido>';
                         if (isset($desc->descuentoSurtidoOtros)) {
-                            $xmlString .= '<DescuentoSurtidoOtros>' . $desc->descuentoSurtidoOtros . '</DescuentoSurtidoOtros>';
+                            $xmlString .= '<DescuentoSurtidoOtros>' . genXMLEscape($desc->descuentoSurtidoOtros) . '</DescuentoSurtidoOtros>';
                         }
                         $xmlString .= '</DescuentoSurtido>';
                     }
@@ -3143,7 +3148,7 @@ function genXMLTE()
                         $xmlString .= '<ImpuestoSurtido>';
                         $xmlString .= '<CodigoImpuestoSurtido>' . $imp->codigoImpuestoSurtido . '</CodigoImpuestoSurtido>';
                         if (isset($imp->codigoImpuestoOTROSurtido)) {
-                            $xmlString .= '<CodigoImpuestoOTROSurtido>' . $imp->codigoImpuestoOTROSurtido . '</CodigoImpuestoOTROSurtido>';
+                            $xmlString .= '<CodigoImpuestoOTROSurtido>' . genXMLEscape($imp->codigoImpuestoOTROSurtido) . '</CodigoImpuestoOTROSurtido>';
                         }
                         if (isset($imp->codigoTarifaIVASurtido)) {
                             $xmlString .= '<CodigoTarifaIVASurtido>' . $imp->codigoTarifaIVASurtido . '</CodigoTarifaIVASurtido>';
@@ -3244,7 +3249,7 @@ function genXMLTE()
                     isset($i->codigo) && $i->codigo == "99" &&
                     isset($i->codigoImpuestoOtro) && !empty($i->codigoImpuestoOtro)
                 ) {
-                    $xmlString .= '<CodigoImpuestoOTRO>' . $i->codigoImpuestoOtro . '</CodigoImpuestoOTRO>';
+                    $xmlString .= '<CodigoImpuestoOTRO>' . genXMLEscape($i->codigoImpuestoOtro) . '</CodigoImpuestoOTRO>';
                 }
 
                 if (isset($i->codigoTarifa) && $i->codigoTarifa != "") {
@@ -3296,18 +3301,18 @@ function genXMLTE()
                     <Exoneracion>
                         <TipoDocumentoEX1>' . $i->exoneracion->tipoDocumento . '</TipoDocumentoEX1>';
                     if (isset($i->exoneracion->tipoDocumentoOtro) && !empty($i->exoneracion->tipoDocumentoOtro)) {
-                        $xmlString .= '<TipoDocumentoOTRO>' . $i->exoneracion->tipoDocumentoOtro . '</TipoDocumentoOTRO>';
+                        $xmlString .= '<TipoDocumentoOTRO>' . genXMLEscape($i->exoneracion->tipoDocumentoOtro) . '</TipoDocumentoOTRO>';
                     }
-                    $xmlString .= '<NumeroDocumento>' . $i->exoneracion->numeroDocumento . '</NumeroDocumento>';
+                    $xmlString .= '<NumeroDocumento>' . genXMLEscape($i->exoneracion->numeroDocumento) . '</NumeroDocumento>';
                     if (isset($i->exoneracion->numeroArticulo) && !empty($i->exoneracion->numeroArticulo)) {
-                        $xmlString .= '<Articulo>' . $i->exoneracion->numeroArticulo . '</Articulo>';
+                        $xmlString .= '<Articulo>' . genXMLEscape($i->exoneracion->numeroArticulo) . '</Articulo>';
                     }
                     if (isset($i->exoneracion->numeroInciso)) {
-                        $xmlString .= '<Inciso>' . $i->exoneracion->numeroInciso . '</Inciso>';
+                        $xmlString .= '<Inciso>' . genXMLEscape($i->exoneracion->numeroInciso) . '</Inciso>';
                     }
                     $xmlString .= '<NombreInstitucion>' . $i->exoneracion->nombreInstitucion . '</NombreInstitucion>';
                     if (isset($i->exoneracion->nombreInstitucionOtros) && !empty($i->exoneracion->nombreInstitucionOtros)) {
-                        $xmlString .= '<NombreInstitucionOtros>' . $i->exoneracion->nombreInstitucionOtros . '</NombreInstitucionOtros>';
+                        $xmlString .= '<NombreInstitucionOtros>' . genXMLEscape($i->exoneracion->nombreInstitucionOtros) . '</NombreInstitucionOtros>';
                     }
                     $xmlString .= '
                         <FechaEmisionEX>' . $i->exoneracion->fechaEmision . '</FechaEmisionEX>
@@ -3337,7 +3342,7 @@ function genXMLTE()
             <TipoDocumentoOC>' . $o->tipoDocumentoOC . '</TipoDocumentoOC>';
             if (isset($o->tipoDocumentoOTROS) && $o->tipoDocumentoOTROS != "") {
                 $xmlString .= '
-            <TipoDocumentoOTROS>' . $o->tipoDocumentoOTROS . '</TipoDocumentoOTROS>';
+            <TipoDocumentoOTROS>' . genXMLEscape($o->tipoDocumentoOTROS) . '</TipoDocumentoOTROS>';
             }
             if (isset($o->numeroIdentidadTercero) && $o->numeroIdentidadTercero != "" && isset($o->tipoIdentidadTercero) && $o->tipoIdentidadTercero != "") {
                 $xmlString .= '
@@ -3348,10 +3353,10 @@ function genXMLTE()
             }
             if (isset($o->nombreTercero) && $o->nombreTercero != "") {
                 $xmlString .= '
-            <NombreTercero>' . $o->nombreTercero . '</NombreTercero>';
+            <NombreTercero>' . genXMLEscape($o->nombreTercero) . '</NombreTercero>';
             }
             $xmlString .= '
-            <Detalle>' . $o->detalle . '</Detalle>';
+            <Detalle>' . genXMLEscape($o->detalle) . '</Detalle>';
             if (isset($o->porcentajeOC) && $o->porcentajeOC != "") {
                 $xmlString .= '
             <PorcentajeOC>' . $o->porcentajeOC . '</PorcentajeOC>';
@@ -3527,7 +3532,7 @@ function genXMLTE()
                         $xmlString .= '<TipoDocRefOTRO>' . htmlspecialchars($ref->tipoDocOtro) . '</TipoDocRefOTRO>';
                     }
                     if (isset($ref->numero)) {
-                        $xmlString .= '<Numero>' . $ref->numero . '</Numero>';
+                        $xmlString .= '<Numero>' . genXMLEscape($ref->numero) . '</Numero>';
                     }
                     $xmlString .= '<FechaEmisionIR>' . $ref->fechaEmision . '</FechaEmisionIR>';
                     if (isset($ref->codigo)) {
@@ -3537,7 +3542,7 @@ function genXMLTE()
                         }
                     }
                     if (isset($ref->razon)) {
-                        $xmlString .= '<Razon>' . $ref->razon . '</Razon>';
+                        $xmlString .= '<Razon>' . genXMLEscape($ref->razon) . '</Razon>';
                     }
                     $xmlString .= '</InformacionReferencia>';
                 } else {
@@ -3683,7 +3688,7 @@ function genXMLMr()
     <FechaEmisionDoc>' . $fechaEmisionDoc . '</FechaEmisionDoc>
     <Mensaje>' . $mensaje . '</Mensaje>';
     if (!empty($detalleMensaje)) {
-        $xmlString .= '<DetalleMensaje>' . $detalleMensaje . '</DetalleMensaje>';
+        $xmlString .= '<DetalleMensaje>' . genXMLEscape($detalleMensaje) . '</DetalleMensaje>';
     }
 
     if (!empty($montoTotalImpuesto)) {
@@ -3848,7 +3853,7 @@ function genXMLFec()
         <NumeroConsecutivo>' . $consecutivo . '</NumeroConsecutivo>
         <FechaEmision>' . $fechaEmision . '</FechaEmision>
         <Emisor>
-            <Nombre>' . $emisorNombre . '</Nombre>
+            <Nombre>' . genXMLEscape($emisorNombre) . '</Nombre>
             <Identificacion>
                 <Tipo>' . $emisorTipoIdentif . '</Tipo>
                 <Numero>' . $emisorNumIdentif . '</Numero>
@@ -3861,7 +3866,7 @@ function genXMLFec()
 
     if (isset($emisorNombreComercial) && $emisorNombreComercial != "") {
         $xmlString .= '
-        <NombreComercial>' . $emisorNombreComercial . '</NombreComercial>';
+        <NombreComercial>' . genXMLEscape($emisorNombreComercial) . '</NombreComercial>';
     }
 
     if ($emisorProv != '' && $emisorCanton != '' && $emisorDistrito != '' && $emisorOtrasSenas != '') {
@@ -3871,16 +3876,16 @@ function genXMLFec()
             <Canton>' . $emisorCanton . '</Canton>
             <Distrito>' . $emisorDistrito . '</Distrito>';
         if ($emisorBarrio != '') {
-            $xmlString .= '<Barrio>' . $emisorBarrio . '</Barrio>';
+            $xmlString .= '<Barrio>' . genXMLEscape($emisorBarrio) . '</Barrio>';
         }
         $xmlString .= '
-                <OtrasSenas>' . $emisorOtrasSenas . '</OtrasSenas>
+                <OtrasSenas>' . genXMLEscape($emisorOtrasSenas) . '</OtrasSenas>
          </Ubicacion>';
     }
 
     if ($emisorOtrasSenasExtranjero != '' && strlen($emisorOtrasSenasExtranjero) <= RECEPTOROTRASSENASEXTRANJEROMAXSIZE) {
         $xmlString .= '
-        <OtrasSenasExtranjero>' . $emisorOtrasSenasExtranjero . '</OtrasSenasExtranjero>';
+        <OtrasSenasExtranjero>' . genXMLEscape($emisorOtrasSenasExtranjero) . '</OtrasSenasExtranjero>';
     }
 
     if ($emisorCodPaisTel != '' && $emisorTel != '' && $emisorTel >= EMISORNUMEROTELMIN && $emisorTel <= EMISORNUMEROTELMAX) {
@@ -3899,7 +3904,7 @@ function genXMLFec()
     $xmlString .= '</Emisor>';
 
     $xmlString .= '<Receptor>
-        <Nombre>' . $receptorNombre . '</Nombre>';
+        <Nombre>' . genXMLEscape($receptorNombre) . '</Nombre>';
 
     $xmlString .= '
         <Identificacion>
@@ -3909,7 +3914,7 @@ function genXMLFec()
 
     if (isset($receptorNombreComercial) && $receptorNombreComercial != "") {
         $xmlString .= '
-        <NombreComercial>' . $receptorNombreComercial . '</NombreComercial>';
+        <NombreComercial>' . genXMLEscape($receptorNombreComercial) . '</NombreComercial>';
     }
 
     if ($receptorProvincia != '' && $receptorCanton != '' && $receptorDistrito != '' && $receptorOtrasSenas != '') {
@@ -3919,10 +3924,10 @@ function genXMLFec()
                 <Canton>' . $receptorCanton . '</Canton>
                 <Distrito>' . $receptorDistrito . '</Distrito>';
         if ($receptorBarrio != '') {
-            $xmlString .= '<Barrio>' . $receptorBarrio . '</Barrio>';
+            $xmlString .= '<Barrio>' . genXMLEscape($receptorBarrio) . '</Barrio>';
         }
         $xmlString .= '
-                <OtrasSenas>' . $receptorOtrasSenas . '</OtrasSenas>
+                <OtrasSenas>' . genXMLEscape($receptorOtrasSenas) . '</OtrasSenas>
             </Ubicacion>';
     }
 
@@ -3935,7 +3940,7 @@ function genXMLFec()
     }
 
     if ($receptorEmail != '') {
-        $xmlString .= '<CorreoElectronico>' . $receptorEmail . '</CorreoElectronico>';
+        $xmlString .= '<CorreoElectronico>' . genXMLEscape($receptorEmail) . '</CorreoElectronico>';
     }
 
     $xmlString .= '</Receptor>';
@@ -3945,7 +3950,7 @@ function genXMLFec()
 
     if (isset($condVentaOtros) && $condVentaOtros != "") {
         $xmlString .= '
-        <CondicionVentaOtros>' . $condVentaOtros . '</CondicionVentaOtros>';
+        <CondicionVentaOtros>' . genXMLEscape($condVentaOtros) . '</CondicionVentaOtros>';
     }
 
     if (isset($plazoCredito) && $plazoCredito != "") {
@@ -3990,7 +3995,7 @@ function genXMLFec()
                     $xmlString .= '
                         <CodigoComercial>
                             <Tipo>' . $c['tipo'] . '</Tipo>
-                            <Codigo>' . $c['codigo'] . '</Codigo>
+                            <Codigo>' . genXMLEscape($c['codigo']) . '</Codigo>
                         </CodigoComercial>';
                 }
             }
@@ -4005,12 +4010,12 @@ function genXMLFec()
         }
         if (isset($d->unidadMedidaComercial) && $d->unidadMedidaComercial != "") {
             $xmlString .= '
-                <UnidadMedidaComercial>' . $d->unidadMedidaComercial . '</UnidadMedidaComercial>';
+                <UnidadMedidaComercial>' . genXMLEscape($d->unidadMedidaComercial) . '</UnidadMedidaComercial>';
         }
         $xmlString .= '
-            <Detalle>' . $d->detalle . '</Detalle>';
+            <Detalle>' . genXMLEscape($d->detalle) . '</Detalle>';
         if (isset($d->numeroVINoSerie) && $d->numeroVINoSerie != "") {
-            $xmlString .= '<NumeroVINoSerie>' . $d->numeroVINoSerie . '</NumeroVINoSerie>';
+            $xmlString .= '<NumeroVINoSerie>' . genXMLEscape($d->numeroVINoSerie) . '</NumeroVINoSerie>';
         }
 
         if (isset($d->registroMedicamento) && $d->registroMedicamento !== "") {
@@ -4081,7 +4086,7 @@ function genXMLFec()
                     isset($i->codigo) && $i->codigo == "99" &&
                     isset($i->codigoImpuestoOtro) && !empty($i->codigoImpuestoOtro)
                 ) {
-                    $xmlString .= '<CodigoImpuestoOTRO>' . $i->codigoImpuestoOtro . '</CodigoImpuestoOTRO>';
+                    $xmlString .= '<CodigoImpuestoOTRO>' . genXMLEscape($i->codigoImpuestoOtro) . '</CodigoImpuestoOTRO>';
                 }
 
                 if (isset($i->codigoTarifa) && $i->codigoTarifa != "") {
@@ -4103,18 +4108,18 @@ function genXMLFec()
                     <Exoneracion>
                         <TipoDocumentoEX1>' . $i->exoneracion->tipoDocumento . '</TipoDocumentoEX1>';
                     if (isset($i->exoneracion->tipoDocumentoOtro) && !empty($i->exoneracion->tipoDocumentoOtro)) {
-                        $xmlString .= '<TipoDocumentoOTRO>' . $i->exoneracion->tipoDocumentoOtro . '</TipoDocumentoOTRO>';
+                        $xmlString .= '<TipoDocumentoOTRO>' . genXMLEscape($i->exoneracion->tipoDocumentoOtro) . '</TipoDocumentoOTRO>';
                     }
-                    $xmlString .= '<NumeroDocumento>' . $i->exoneracion->numeroDocumento . '</NumeroDocumento>';
+                    $xmlString .= '<NumeroDocumento>' . genXMLEscape($i->exoneracion->numeroDocumento) . '</NumeroDocumento>';
                     if (isset($i->exoneracion->numeroArticulo) && !empty($i->exoneracion->numeroArticulo)) {
-                        $xmlString .= '<Articulo>' . $i->exoneracion->numeroArticulo . '</Articulo>';
+                        $xmlString .= '<Articulo>' . genXMLEscape($i->exoneracion->numeroArticulo) . '</Articulo>';
                     }
                     if (isset($i->exoneracion->numeroInciso)) {
-                        $xmlString .= '<Inciso>' . $i->exoneracion->numeroInciso . '</Inciso>';
+                        $xmlString .= '<Inciso>' . genXMLEscape($i->exoneracion->numeroInciso) . '</Inciso>';
                     }
                     $xmlString .= '<NombreInstitucion>' . $i->exoneracion->nombreInstitucion . '</NombreInstitucion>';
                     if (isset($i->exoneracion->nombreInstitucionOtros) && !empty($i->exoneracion->nombreInstitucionOtros)) {
-                        $xmlString .= '<NombreInstitucionOtros>' . $i->exoneracion->nombreInstitucionOtros . '</NombreInstitucionOtros>';
+                        $xmlString .= '<NombreInstitucionOtros>' . genXMLEscape($i->exoneracion->nombreInstitucionOtros) . '</NombreInstitucionOtros>';
                     }
                     $xmlString .= '
                         <FechaEmisionEX>' . $i->exoneracion->fechaEmision . '</FechaEmisionEX>
@@ -4142,7 +4147,7 @@ function genXMLFec()
             <TipoDocumentoOC>' . $o->tipoDocumentoOC . '</TipoDocumentoOC>';
             if (isset($o->tipoDocumentoOTROS) && $o->tipoDocumentoOTROS != "") {
                 $xmlString .= '
-            <TipoDocumentoOTROS>' . $o->tipoDocumentoOTROS . '</TipoDocumentoOTROS>';
+            <TipoDocumentoOTROS>' . genXMLEscape($o->tipoDocumentoOTROS) . '</TipoDocumentoOTROS>';
             }
             if (isset($o->numeroIdentidadTercero) && $o->numeroIdentidadTercero != "" && isset($o->tipoIdentidadTercero) && $o->tipoIdentidadTercero != "") {
                 $xmlString .= '
@@ -4153,10 +4158,10 @@ function genXMLFec()
             }
             if (isset($o->nombreTercero) && $o->nombreTercero != "") {
                 $xmlString .= '
-            <NombreTercero>' . $o->nombreTercero . '</NombreTercero>';
+            <NombreTercero>' . genXMLEscape($o->nombreTercero) . '</NombreTercero>';
             }
             $xmlString .= '
-            <Detalle>' . $o->detalle . '</Detalle>';
+            <Detalle>' . genXMLEscape($o->detalle) . '</Detalle>';
             if (isset($o->porcentajeOC) && $o->porcentajeOC != "") {
                 $xmlString .= '
             <PorcentajeOC>' . $o->porcentajeOC . '</PorcentajeOC>';
@@ -4327,7 +4332,7 @@ function genXMLFec()
                         $xmlString .= '<TipoDocRefOTRO>' . htmlspecialchars($ref->tipoDocOtro) . '</TipoDocRefOTRO>';
                     }
                     if (isset($ref->numero)) {
-                        $xmlString .= '<Numero>' . $ref->numero . '</Numero>';
+                        $xmlString .= '<Numero>' . genXMLEscape($ref->numero) . '</Numero>';
                     }
                     $xmlString .= '<FechaEmisionIR>' . $ref->fechaEmision . '</FechaEmisionIR>';
                     if (isset($ref->codigo)) {
@@ -4337,7 +4342,7 @@ function genXMLFec()
                         }
                     }
                     if (isset($ref->razon)) {
-                        $xmlString .= '<Razon>' . $ref->razon . '</Razon>';
+                        $xmlString .= '<Razon>' . genXMLEscape($ref->razon) . '</Razon>';
                     }
                     $xmlString .= '</InformacionReferencia>';
                 } else {
@@ -4518,7 +4523,7 @@ function genXMLRep()
         <NumeroConsecutivo>' . $consecutivo . '</NumeroConsecutivo>
         <FechaEmision>' . $fechaEmision . '</FechaEmision>
         <Emisor>
-            <Nombre>' . $emisorNombre . '</Nombre>
+            <Nombre>' . genXMLEscape($emisorNombre) . '</Nombre>
             <Identificacion>
                 <Tipo>' . $emisorTipoIdentif . '</Tipo>
                 <Numero>' . $emisorNumIdentif . '</Numero>
@@ -4532,14 +4537,14 @@ function genXMLRep()
     $xmlString .= '</Emisor>';
 
     $xmlString .= '<Receptor>
-        <Nombre>' . $receptorNombre . '</Nombre>
+        <Nombre>' . genXMLEscape($receptorNombre) . '</Nombre>
         <Identificacion>
             <Tipo>' . $receptorTipoIdentif . '</Tipo>
             <Numero>' . $receptorNumIdentif . '</Numero>
         </Identificacion>';
     // ReceptorType del REP = Nombre + Identificacion + CorreoElectronico (opcional).
     if ($receptorEmail != '') {
-        $xmlString .= '<CorreoElectronico>' . $receptorEmail . '</CorreoElectronico>';
+        $xmlString .= '<CorreoElectronico>' . genXMLEscape($receptorEmail) . '</CorreoElectronico>';
     }
     $xmlString .= '</Receptor>';
 
@@ -4551,7 +4556,7 @@ function genXMLRep()
     foreach ($detalles as $d) {
         $xmlString .= '<LineaDetalle>
             <NumeroLinea>' . $l . '</NumeroLinea>
-            <Detalle>' . $d->detalle . '</Detalle>
+            <Detalle>' . genXMLEscape($d->detalle) . '</Detalle>
             <MontoTotal>' . $d->montoTotal . '</MontoTotal>
             <SubTotal>' . $d->subTotal . '</SubTotal>';
         if (isset($d->impuesto) && !empty($d->impuesto)) {
@@ -4633,7 +4638,7 @@ function genXMLRep()
                         $xmlString .= '<TipoDocRefOTRO>' . htmlspecialchars($ref->tipoDocOtro) . '</TipoDocRefOTRO>';
                     }
                     if (isset($ref->numero)) {
-                        $xmlString .= '<Numero>' . $ref->numero . '</Numero>';
+                        $xmlString .= '<Numero>' . genXMLEscape($ref->numero) . '</Numero>';
                     }
                     $xmlString .= '<FechaEmisionIR>' . $ref->fechaEmision . '</FechaEmisionIR>';
                     if (isset($ref->codigo)) {
@@ -4643,7 +4648,7 @@ function genXMLRep()
                         }
                     }
                     if (isset($ref->razon)) {
-                        $xmlString .= '<Razon>' . $ref->razon . '</Razon>';
+                        $xmlString .= '<Razon>' . genXMLEscape($ref->razon) . '</Razon>';
                     }
                     $xmlString .= '</InformacionReferencia>';
                 } else {
@@ -4769,7 +4774,7 @@ function genXMLFee()
         <NumeroConsecutivo>' . $consecutivo . '</NumeroConsecutivo>
         <FechaEmision>' . $fechaEmision . '</FechaEmision>
         <Emisor>
-            <Nombre>' . $emisorNombre . '</Nombre>
+            <Nombre>' . genXMLEscape($emisorNombre) . '</Nombre>
             <Identificacion>
                 <Tipo>' . $emisorTipoIdentif . '</Tipo>
                 <Numero>' . $emisorNumIdentif . '</Numero>
@@ -4782,7 +4787,7 @@ function genXMLFee()
 
     if (isset($emisorNombreComercial) && $emisorNombreComercial != "") {
         $xmlString .= '
-        <NombreComercial>' . $emisorNombreComercial . '</NombreComercial>';
+        <NombreComercial>' . genXMLEscape($emisorNombreComercial) . '</NombreComercial>';
     }
 
     if ($emisorProv != '' && $emisorCanton != '' && $emisorDistrito != '' && $emisorOtrasSenas != '') {
@@ -4792,10 +4797,10 @@ function genXMLFee()
             <Canton>' . $emisorCanton . '</Canton>
             <Distrito>' . $emisorDistrito . '</Distrito>';
         if ($emisorBarrio != '') {
-            $xmlString .= '<Barrio>' . $emisorBarrio . '</Barrio>';
+            $xmlString .= '<Barrio>' . genXMLEscape($emisorBarrio) . '</Barrio>';
         }
         $xmlString .= '
-                <OtrasSenas>' . $emisorOtrasSenas . '</OtrasSenas>
+                <OtrasSenas>' . genXMLEscape($emisorOtrasSenas) . '</OtrasSenas>
             </Ubicacion>';
     }
 
@@ -4815,7 +4820,7 @@ function genXMLFee()
 
     if (isset($receptorNombre) && $receptorNombre != "") {
         $xmlString .= '<Receptor>
-        <Nombre>' . $receptorNombre . '</Nombre>';
+        <Nombre>' . genXMLEscape($receptorNombre) . '</Nombre>';
     }
 
     if (isset($receptorTipoIdentif) && $receptorTipoIdentif != "" && isset($receptorNumIdentif) && $receptorNumIdentif != "") {
@@ -4828,7 +4833,7 @@ function genXMLFee()
 
     if (isset($receptorNombreComercial) && $receptorNombreComercial != "") {
         $xmlString .= '
-        <NombreComercial>' . $receptorNombreComercial . '</NombreComercial>';
+        <NombreComercial>' . genXMLEscape($receptorNombreComercial) . '</NombreComercial>';
     }
 
     if (isset($receptorProvincia) && $receptorProvincia != '' && $receptorCanton != '' && $receptorDistrito != '' && $receptorOtrasSenas != '') {
@@ -4838,17 +4843,17 @@ function genXMLFee()
             <Canton>' . $receptorCanton . '</Canton>
             <Distrito>' . $receptorDistrito . '</Distrito>';
         if ($receptorBarrio != '') {
-            $xmlString .= '<Barrio>' . $receptorBarrio . '</Barrio>';
+            $xmlString .= '<Barrio>' . genXMLEscape($receptorBarrio) . '</Barrio>';
         }
         $xmlString .= '
-            <OtrasSenas>' . $receptorOtrasSenas . '</OtrasSenas>
+            <OtrasSenas>' . genXMLEscape($receptorOtrasSenas) . '</OtrasSenas>
         </Ubicacion>';
     }
 
     if ($receptorOtrasSenasExtranjero != '' && strlen($receptorOtrasSenasExtranjero) <= RECEPTOROTRASSENASEXTRANJEROMAXSIZE) {
         $xmlString .= '
         <OtrasSenasExtranjero>'
-            . $receptorOtrasSenasExtranjero .
+            . genXMLEscape($receptorOtrasSenasExtranjero) .
             '</OtrasSenasExtranjero>';
     }
 
@@ -4862,7 +4867,7 @@ function genXMLFee()
     }
 
     if ($receptorEmail != '') {
-        $xmlString .= '<CorreoElectronico>' . $receptorEmail . '</CorreoElectronico>';
+        $xmlString .= '<CorreoElectronico>' . genXMLEscape($receptorEmail) . '</CorreoElectronico>';
         $xmlString .= '</Receptor>';
     }
 
@@ -4871,7 +4876,7 @@ function genXMLFee()
 
     if (isset($condVentaOtros) && $condVentaOtros != "") {
         $xmlString .= '
-        <CondicionVentaOtros>' . $condVentaOtros . '</CondicionVentaOtros>';
+        <CondicionVentaOtros>' . genXMLEscape($condVentaOtros) . '</CondicionVentaOtros>';
     }
 
     if (isset($plazoCredito) && $plazoCredito != "") {
@@ -4915,7 +4920,7 @@ function genXMLFee()
                     $xmlString .= '
                         <CodigoComercial>
                             <Tipo>' . $c['tipo'] . '</Tipo>
-                            <Codigo>' . $c['codigo'] . '</Codigo>
+                            <Codigo>' . genXMLEscape($c['codigo']) . '</Codigo>
                         </CodigoComercial>';
                 }
             }
@@ -4931,12 +4936,12 @@ function genXMLFee()
         }
         if (isset($d->unidadMedidaComercial) && $d->unidadMedidaComercial != "") {
             $xmlString .= '
-                <UnidadMedidaComercial>' . $d->unidadMedidaComercial . '</UnidadMedidaComercial>';
+                <UnidadMedidaComercial>' . genXMLEscape($d->unidadMedidaComercial) . '</UnidadMedidaComercial>';
         }
         $xmlString .= '
-            <Detalle>' . $d->detalle . '</Detalle>';
+            <Detalle>' . genXMLEscape($d->detalle) . '</Detalle>';
         if (isset($d->numeroVINoSerie) && $d->numeroVINoSerie != "") {
-            $xmlString .= '<NumeroVINoSerie>' . $d->numeroVINoSerie . '</NumeroVINoSerie>';
+            $xmlString .= '<NumeroVINoSerie>' . genXMLEscape($d->numeroVINoSerie) . '</NumeroVINoSerie>';
         }
 
         if (isset($d->registroMedicamento) && $d->registroMedicamento !== "") {
@@ -4957,16 +4962,16 @@ function genXMLFee()
                     foreach ($codigos as $codigo) {
                         $xmlString .= '<CodigoComercialSurtido>';
                         $xmlString .= '<TipoSurtido>' . $codigo->tipoSurtido . '</TipoSurtido>';
-                        $xmlString .= '<CodigoSurtido>' . $codigo->codigoSurtido . '</CodigoSurtido>';
+                        $xmlString .= '<CodigoSurtido>' . genXMLEscape($codigo->codigoSurtido) . '</CodigoSurtido>';
                         $xmlString .= '</CodigoComercialSurtido>';
                     }
                 }
                 $xmlString .= '<CantidadSurtido>' . $linea->cantidadSurtido . '</CantidadSurtido>';
                 $xmlString .= '<UnidadMedidaSurtido>' . $linea->unidadMedidaSurtido . '</UnidadMedidaSurtido>';
                 if (isset($linea->unidadMedidaComercialSurtido)) {
-                    $xmlString .= '<UnidadMedidaComercialSurtido>' . $linea->unidadMedidaComercialSurtido . '</UnidadMedidaComercialSurtido>';
+                    $xmlString .= '<UnidadMedidaComercialSurtido>' . genXMLEscape($linea->unidadMedidaComercialSurtido) . '</UnidadMedidaComercialSurtido>';
                 }
-                $xmlString .= '<DetalleSurtido>' . $linea->detalleSurtido . '</DetalleSurtido>';
+                $xmlString .= '<DetalleSurtido>' . genXMLEscape($linea->detalleSurtido) . '</DetalleSurtido>';
                 $xmlString .= '<PrecioUnitarioSurtido>' . $linea->precioUnitarioSurtido . '</PrecioUnitarioSurtido>';
                 $xmlString .= '<MontoTotalSurtido>' . $linea->montoTotalSurtido . '</MontoTotalSurtido>';
                 if (isset($linea->descuentoSurtido) && is_array($linea->descuentoSurtido)) {
@@ -4976,7 +4981,7 @@ function genXMLFee()
                         $xmlString .= '<MontoDescuentoSurtido>' . $desc->montoDescuentoSurtido . '</MontoDescuentoSurtido>';
                         $xmlString .= '<CodigoDescuentoSurtido>' . $desc->codigoDescuentoSurtido . '</CodigoDescuentoSurtido>';
                         if (isset($desc->descuentoSurtidoOtros)) {
-                            $xmlString .= '<DescuentoSurtidoOtros>' . $desc->descuentoSurtidoOtros . '</DescuentoSurtidoOtros>';
+                            $xmlString .= '<DescuentoSurtidoOtros>' . genXMLEscape($desc->descuentoSurtidoOtros) . '</DescuentoSurtidoOtros>';
                         }
                         $xmlString .= '</DescuentoSurtido>';
                     }
@@ -4992,7 +4997,7 @@ function genXMLFee()
                         $xmlString .= '<ImpuestoSurtido>';
                         $xmlString .= '<CodigoImpuestoSurtido>' . $imp->codigoImpuestoSurtido . '</CodigoImpuestoSurtido>';
                         if (isset($imp->codigoImpuestoOTROSurtido)) {
-                            $xmlString .= '<CodigoImpuestoOTROSurtido>' . $imp->codigoImpuestoOTROSurtido . '</CodigoImpuestoOTROSurtido>';
+                            $xmlString .= '<CodigoImpuestoOTROSurtido>' . genXMLEscape($imp->codigoImpuestoOTROSurtido) . '</CodigoImpuestoOTROSurtido>';
                         }
                         if (isset($imp->codigoTarifaIVASurtido)) {
                             $xmlString .= '<CodigoTarifaIVASurtido>' . $imp->codigoTarifaIVASurtido . '</CodigoTarifaIVASurtido>';
@@ -5088,7 +5093,7 @@ function genXMLFee()
                     isset($i->codigo) && $i->codigo == "99" &&
                     isset($i->codigoImpuestoOtro) && !empty($i->codigoImpuestoOtro)
                 ) {
-                    $xmlString .= '<CodigoImpuestoOTRO>' . $i->codigoImpuestoOtro . '</CodigoImpuestoOTRO>';
+                    $xmlString .= '<CodigoImpuestoOTRO>' . genXMLEscape($i->codigoImpuestoOtro) . '</CodigoImpuestoOTRO>';
                 }
 
                 if (isset($i->codigoTarifa) && $i->codigoTarifa != "") {
@@ -5157,7 +5162,7 @@ function genXMLFee()
             <TipoDocumentoOC>' . $o->tipoDocumentoOC . '</TipoDocumentoOC>';
             if (isset($o->tipoDocumentoOTROS) && $o->tipoDocumentoOTROS != "") {
                 $xmlString .= '
-            <TipoDocumentoOTROS>' . $o->tipoDocumentoOTROS . '</TipoDocumentoOTROS>';
+            <TipoDocumentoOTROS>' . genXMLEscape($o->tipoDocumentoOTROS) . '</TipoDocumentoOTROS>';
             }
             if (isset($o->numeroIdentidadTercero) && $o->numeroIdentidadTercero != "" && isset($o->tipoIdentidadTercero) && $o->tipoIdentidadTercero != "") {
                 $xmlString .= '
@@ -5168,10 +5173,10 @@ function genXMLFee()
             }
             if (isset($o->nombreTercero) && $o->nombreTercero != "") {
                 $xmlString .= '
-            <NombreTercero>' . $o->nombreTercero . '</NombreTercero>';
+            <NombreTercero>' . genXMLEscape($o->nombreTercero) . '</NombreTercero>';
             }
             $xmlString .= '
-            <Detalle>' . $o->detalle . '</Detalle>';
+            <Detalle>' . genXMLEscape($o->detalle) . '</Detalle>';
             if (isset($o->porcentajeOC) && $o->porcentajeOC != "") {
                 $xmlString .= '
             <PorcentajeOC>' . $o->porcentajeOC . '</PorcentajeOC>';
@@ -5361,7 +5366,7 @@ function genXMLFee()
                         $xmlString .= '<TipoDocRefOTRO>' . htmlspecialchars($ref->tipoDocOtro) . '</TipoDocRefOTRO>';
                     }
                     if (isset($ref->numero)) {
-                        $xmlString .= '<Numero>' . $ref->numero . '</Numero>';
+                        $xmlString .= '<Numero>' . genXMLEscape($ref->numero) . '</Numero>';
                     }
                     $xmlString .= '<FechaEmisionIR>' . $ref->fechaEmision . '</FechaEmisionIR>';
                     if (isset($ref->codigo)) {
@@ -5371,7 +5376,7 @@ function genXMLFee()
                         }
                     }
                     if (isset($ref->razon)) {
-                        $xmlString .= '<Razon>' . $ref->razon . '</Razon>';
+                        $xmlString .= '<Razon>' . genXMLEscape($ref->razon) . '</Razon>';
                     }
                     $xmlString .= '</InformacionReferencia>';
                 } else {
