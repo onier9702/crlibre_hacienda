@@ -52,8 +52,8 @@ $config['boot']['alert'] = "false";
 ##
 ###############################################################################
 $config['debug']['print_all']    = true;
-$config['debug']['print_absurd'] = true;
-$config['debug']['print_debug']  = true;
+$config['debug']['print_absurd'] = false;
+$config['debug']['print_debug']  = false;
 $config['debug']['print_error']  = true;
 ##############################################################################
 #

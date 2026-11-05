@@ -72,8 +72,6 @@ function db_Connect()
     # Create connection
     grace_debug("config['db']['name']: ");
     grace_debug(conf_get('name', 'db'));
-    grace_debug("config['db']['pwd']: ");
-    grace_debug(conf_get('pwd', 'db'));
     grace_debug("config['db']['user']: ");
     grace_debug(conf_get('user', 'db'));
     grace_debug("config['db']['host']: ");
