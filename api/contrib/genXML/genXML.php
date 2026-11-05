@@ -227,11 +227,11 @@ function genXMLFe()
             </Telefono>';
     }
 
-    if (preg_match(EMAIL_REGEX, trim($emisorEmail))) {
-        $xmlString .= '<CorreoElectronico>' . trim($emisorEmail) . '</CorreoElectronico></Emisor>';
-    } else {
+    if (!preg_match(EMAIL_REGEX, trim($emisorEmail))) {
         error_log(sprintf("Invalid email format: '%s' does not meet the regex pattern: %s", $emisorEmail, EMAIL_REGEX));
+        tools_reply(sprintf('El correo electrónico del emisor "%s" es obligatorio y debe tener un formato válido para Hacienda. Corríjalo en la Configuración de Hacienda.', $emisorEmail), true);
     }
+    $xmlString .= '<CorreoElectronico>' . trim($emisorEmail) . '</CorreoElectronico></Emisor>';
 
     $xmlString .= '<Receptor>
         <Nombre>' . genXMLEscape($receptorNombre) . '</Nombre>';
@@ -1218,10 +1218,11 @@ function genXMLNC()
     }
 
     if (preg_match(EMAIL_REGEX, trim($emisorEmail))) {
-        $xmlString .= '<CorreoElectronico>' . trim($emisorEmail) . '</CorreoElectronico></Emisor>';
+        $xmlString .= '<CorreoElectronico>' . trim($emisorEmail) . '</CorreoElectronico>';
     } else {
         error_log(sprintf("Invalid email format: '%s' does not meet the regex pattern: %s", $emisorEmail, EMAIL_REGEX));
     }
+    $xmlString .= '</Emisor>';
 
     // only includes receptor in case this comes in data json
     if ($receptorNombre) {
@@ -2098,10 +2099,11 @@ function genXMLND()
     }
 
     if (preg_match(EMAIL_REGEX, trim($emisorEmail))) {
-        $xmlString .= '<CorreoElectronico>' . trim($emisorEmail) . '</CorreoElectronico></Emisor>';
+        $xmlString .= '<CorreoElectronico>' . trim($emisorEmail) . '</CorreoElectronico>';
     } else {
         error_log(sprintf("Invalid email format: '%s' does not meet the regex pattern: %s", $emisorEmail, EMAIL_REGEX));
     }
+    $xmlString .= '</Emisor>';
 
     if ($receptorNombre) {
         $xmlString .= '<Receptor>
@@ -2965,11 +2967,11 @@ function genXMLTE()
         </Telefono>';
     }
 
-    if (preg_match(EMAIL_REGEX, trim($emisorEmail))) {
-        $xmlString .= '<CorreoElectronico>' . trim($emisorEmail) . '</CorreoElectronico></Emisor>';
-    } else {
+    if (!preg_match(EMAIL_REGEX, trim($emisorEmail))) {
         error_log(sprintf("Invalid email format: '%s' does not meet the regex pattern: %s", $emisorEmail, EMAIL_REGEX));
+        tools_reply(sprintf('El correo electrónico del emisor "%s" es obligatorio y debe tener un formato válido para Hacienda. Corríjalo en la Configuración de Hacienda.', $emisorEmail), true);
     }
+    $xmlString .= '<CorreoElectronico>' . trim($emisorEmail) . '</CorreoElectronico></Emisor>';
 
     if ($receptorNombre != "" && $receptorEmail != "") {
         $xmlString .= '<Receptor>
@@ -4531,10 +4533,11 @@ function genXMLRep()
 
     // EmisorType del REP = Nombre + Identificacion + CorreoElectronico (NO lleva
     // NombreComercial / Ubicacion / Telefono — a diferencia de la FE/FEC).
-    if ($emisorEmail != '' && preg_match(EMAIL_REGEX, trim($emisorEmail))) {
-        $xmlString .= '<CorreoElectronico>' . trim($emisorEmail) . '</CorreoElectronico>';
+    if (!preg_match(EMAIL_REGEX, trim($emisorEmail))) {
+        error_log(sprintf("Invalid email format: '%s' does not meet the regex pattern: %s", $emisorEmail, EMAIL_REGEX));
+        tools_reply(sprintf('El correo electrónico del emisor "%s" es obligatorio y debe tener un formato válido para Hacienda. Corríjalo en la Configuración de Hacienda.', $emisorEmail), true);
     }
-    $xmlString .= '</Emisor>';
+    $xmlString .= '<CorreoElectronico>' . trim($emisorEmail) . '</CorreoElectronico></Emisor>';
 
     $xmlString .= '<Receptor>
         <Nombre>' . genXMLEscape($receptorNombre) . '</Nombre>
@@ -4812,11 +4815,11 @@ function genXMLFee()
             </Telefono>';
     }
 
-    if (preg_match(EMAIL_REGEX, trim($emisorEmail))) {
-        $xmlString .= '<CorreoElectronico>' . trim($emisorEmail) . '</CorreoElectronico></Emisor>';
-    } else {
+    if (!preg_match(EMAIL_REGEX, trim($emisorEmail))) {
         error_log(sprintf("Invalid email format: '%s' does not meet the regex pattern: %s", $emisorEmail, EMAIL_REGEX));
+        tools_reply(sprintf('El correo electrónico del emisor "%s" es obligatorio y debe tener un formato válido para Hacienda. Corríjalo en la Configuración de Hacienda.', $emisorEmail), true);
     }
+    $xmlString .= '<CorreoElectronico>' . trim($emisorEmail) . '</CorreoElectronico></Emisor>';
 
     if (isset($receptorNombre) && $receptorNombre != "") {
         $xmlString .= '<Receptor>
