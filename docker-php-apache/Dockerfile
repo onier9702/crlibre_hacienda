@@ -18,6 +18,9 @@ RUN apt-get update && apt-get -y install \
 
 RUN a2enmod rewrite
 
+COPY docker-php-apache/apache-deny-api.conf /etc/apache2/conf-available/zz-deny-api.conf
+RUN a2enconf zz-deny-api
+
 # openssl.cnf path
 COPY docker-php-apache/openssl.cnf /usr/lib/ssl/openssl.cnf
 
