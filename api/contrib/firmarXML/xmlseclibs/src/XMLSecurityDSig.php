@@ -1382,7 +1382,9 @@ class XMLSecurityDSig
         }
         $certIssuer = [];
         foreach ($certData['issuer'] as $item => $value) {
-            $certIssuer[] = $item . '=' . $value;
+            foreach ((array) $value as $part) {
+                $certIssuer[] = $item . '=' . $part;
+            }
         }
         $certIssuer = implode(', ', array_reverse($certIssuer));
         $X509IssuerNameNode = $this->createNewSignNode('X509IssuerName', $certIssuer);
