@@ -21,6 +21,8 @@ RUN a2enmod rewrite
 COPY docker-php-apache/apache-deny-api.conf /etc/apache2/conf-available/zz-deny-api.conf
 RUN a2enconf zz-deny-api
 
+COPY docker-php-apache/php-hardening.ini /usr/local/etc/php/conf.d/zz-hardening.ini
+
 # openssl.cnf path
 COPY docker-php-apache/openssl.cnf /usr/lib/ssl/openssl.cnf
 

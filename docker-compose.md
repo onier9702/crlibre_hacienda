@@ -71,7 +71,7 @@ Esto podría pasar por ejemplo si los archivos se editan en Windows OS y se ejec
 Para convertir los archivos a un formato compatible hay varias opciones. Abrir el archivo y guardarlo en el formato correcto o si esta en linux utilizar el commando `dos2unix`.
 Por ejemplo el siguiente script de bash podría hacer la modificación :
 
-`` sudo apt install dos2unix && for i in `find .`; do dos2unix $i; done ``
+``sudo apt install dos2unix && for i in `find .`; do dos2unix $i; done``
 
 3. No encuentra el archivo `settings.php`
 
