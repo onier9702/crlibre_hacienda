@@ -52,7 +52,7 @@ function boot_itUp($mode = 'web')
     grace_debug("Booting up");
 
     if (conf_get('alert', 'boot') == 'false')
-        error_reporting(0); // Turn off all error reporting
+        error_reporting(E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_RECOVERABLE_ERROR); // Fatal errors only
 
     # Load all core modules
     # @todo Call the current requested module first in case it wants to change the core modules to be loaded

@@ -21,7 +21,12 @@
  */
 
 error_reporting(E_ALL);
-ini_set("display_errors", 1);
+ini_set("display_errors", 0);
+register_shutdown_function(function () {
+    $error = error_get_last();
+    if ($error && ($error["type"] & (E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_RECOVERABLE_ERROR)))
+        http_response_code(200);
+});
 
 // Cambiamos zona horaria a Costa Rica
 date_default_timezone_set("America/Costa_Rica");
