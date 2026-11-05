@@ -824,7 +824,9 @@ class XMLSecurityDSig
 
     // Allows converting large hexadecimal string to large decimal string
     // without precision issues or requiring PHP extensions like BC Math or GMP
-    public function stringHex2StringDec($hex) {
+    public static function stringHex2StringDec($hex) {
+        $sign = strpos($hex, '-') === 0 ? '-' : '';
+        $hex = preg_replace('/^-?0x/i', '', $hex);
         $dec = [];
         $hexLen = strlen($hex);
         for ($h = 0; $h < $hexLen; ++$h) {
@@ -839,7 +841,7 @@ class XMLSecurityDSig
                 $carry = (int) ($carry / 10);
             }
         }
-        return join("", array_reverse($dec));
+        return $sign . join("", array_reverse($dec));
     }
 
     /**
@@ -1158,7 +1160,7 @@ class XMLSecurityDSig
                         // https://bugs.php.net/bug.php?id=77411
                         $serialNumber = $certData['serialNumber'];
                     } else {
-                        $serialNumber = stringHex2StringDec($certData['serialNumber']);
+                        $serialNumber = self::stringHex2StringDec($certData['serialNumber']);
                     }
                     if ($issuerSerial && ! empty($certData['issuer']) && ! empty($serialNumber)) {
                         if (is_array($certData['issuer'])) {
@@ -1376,7 +1378,7 @@ class XMLSecurityDSig
             // https://bugs.php.net/bug.php?id=77411
             $serialNumber = $certData['serialNumber'];
         } else {
-            $serialNumber = stringHex2StringDec($certData['serialNumber']);
+            $serialNumber = self::stringHex2StringDec($certData['serialNumber']);
         }
         $certIssuer = [];
         foreach ($certData['issuer'] as $item => $value) {
