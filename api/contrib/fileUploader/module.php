@@ -47,6 +47,13 @@ function fileUploader_init()
             'access_params' => 'accessName',
             'file'          => 'uploader.php'
         ),
+        array(
+            'r'             => 'eliminar_certif',
+            'action'        => 'deleteCert',
+            'access'        => 'users_loggedIn',
+            'access_params' => 'accessName',
+            'file'          => 'uploader.php'
+        ),
             array(
             'r'             => 'subir_xml',
             'action'        => 'uploadXml',

@@ -28,6 +28,35 @@ function uploadCert()
     return $dets;
 }
 
+function deleteCert()
+{
+    modules_loader("files");
+    global $user;
+
+    $q = sprintf(
+        "DELETE FROM files WHERE idUser = '%s' AND type = 'hacienda' AND name LIKE '%%.p12'",
+        db_escape($user->idUser)
+    );
+    $removedRows = db_query($q, 0);
+
+    if ($removedRows === ERROR_DB_NO_RESULTS_FOUND)
+        $removedRows = 0;
+
+    if (!is_int($removedRows))
+        return ERROR_FILES_UPLOAD_ERROR;
+
+    $removedFiles = 0;
+    foreach (glob(files_createPath($user->idUser, "hacienda") . "*.p12") ?: [] as $path) {
+        if (unlink($path))
+            $removedFiles++;
+    }
+
+    return [
+        'removedRows'  => $removedRows,
+        'removedFiles' => $removedFiles
+    ];
+}
+
 function uploadXml()
 {
     modules_loader("files");
